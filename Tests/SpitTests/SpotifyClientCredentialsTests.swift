@@ -1,7 +1,7 @@
 import XCTest
 @testable import Spit
 
-final class OAuthTests: XCTestCase {
+final class SpotifyClientCredentialsTests: XCTestCase {
     /// A good response with 200 status code used for testing status code
     /// handling
     let goodResponse = HTTPURLResponse(
@@ -22,10 +22,13 @@ final class OAuthTests: XCTestCase {
     let scope = "client"
     let refreshToken = "refresh-344"
     let expiresIn = 24
+    var headers = ["grant_type": "client_credentials"]
 
     /// JSON Data created from the input data. This will be set in the setUp
     /// function
     var jsonData = Data()
+    // Token created in setUp
+    var token: TokenInfo!
 
     override func setUp() {
         // Create string from test input data
@@ -43,6 +46,8 @@ final class OAuthTests: XCTestCase {
             XCTFail("Unable to convert string to bytes")
             return
         }
+        // Token is created using fromSpotify since it does not have an init
+        token = try! TokenInfo.fromSpotify(data: d)
         jsonData = d
     }
 
@@ -72,9 +77,35 @@ final class OAuthTests: XCTestCase {
     }
 
     func testFromJSON() {
+        let expiresAt = Date()
+        let json = """
+        {
+        "access_token": "\(accessToken)",
+        "token_type": "\(tokenType)",
+        "scope": "\(scope)",
+        "expires_at": \(expiresAt.timeIntervalSinceReferenceDate)
+        }
+        """
+        print(json)
+        guard let jsonData = json.data(using: .utf8) else {
+            XCTFail("Unable to convert string to bytes")
+            return
+        }
+        do {
+            let tokenInfo = try TokenInfo.fromJSON(data: jsonData)
+            XCTAssertEqual(accessToken, tokenInfo.accessToken)
+            XCTAssertEqual(tokenType, tokenInfo.tokenType)
+            XCTAssertEqual(scope, tokenInfo.scope)
+            XCTAssertEqual(expiresAt, tokenInfo.expiresAt)
+        } catch {
+            XCTFail("Unexpected failure: \(error)")
+        }
+    }
+
+    func testFromSpotify() {
         do {
             // Deserialised test input JSON data
-            let tokenInfo = try TokenInfo.fromJSON(data: jsonData)
+            let tokenInfo = try TokenInfo.fromSpotify(data: jsonData)
             // Ensure that the result matches the input
             XCTAssertEqual(accessToken, tokenInfo.accessToken)
             XCTAssertEqual(tokenType, tokenInfo.tokenType)
@@ -85,7 +116,7 @@ final class OAuthTests: XCTestCase {
         }
     }
 
-    func testFromJSONMissingRefreshToken() {
+    func testFromSpotifyMissingRefreshToken() {
         // JSON data that does not contain refresh_token since it is an optional
         // field
         let json = """
@@ -101,7 +132,7 @@ final class OAuthTests: XCTestCase {
             return
         }
         do {
-            let tokenInfo = try TokenInfo.fromJSON(data: jsonData)
+            let tokenInfo = try TokenInfo.fromSpotify(data: jsonData)
             // Ensure all other input values are set correctly
             XCTAssertEqual(accessToken, tokenInfo.accessToken)
             XCTAssertEqual(tokenType, tokenInfo.tokenType)
@@ -113,25 +144,24 @@ final class OAuthTests: XCTestCase {
         }
     }
 
-    /// Fake HTTP Client for mocking network interaction
-    class FakeClient: HTTPClient {
-        private let expected: (Data?, HTTPURLResponse?, Error?)
-        /// Keeps track of calls to authenticationRequest
-        var calls: [(url: String, username: String, password: String, headers: [String : String])] = []
+    /// Fake token fetcher for mocking network interaction
+    class FakeTokenFetcher: AuthorizationTokenFetcher {
+        /// Keeps track of calls to fetchAccessToken
+        var calls: [(clientID: String, clientSecret: String, headers: [String : String])] = []
+        private let result: FetchTokenResult
 
-        /// Create a fake network interface
+        /// Create a FakeTokenFetcher
         ///
-        /// - Parameter expected: This will be returned via
-        /// authenticationRequest's completionHandler
-        init(expected: (Data?, HTTPURLResponse?, Error?)) {
-            self.expected = expected
+        /// - Parameter result: The result to be returned from fetchAccessToken
+        init(result: FetchTokenResult) {
+            self.result = result
         }
 
-        func authenticationRequest(url: String, username: String,
-                                   password: String, headers: [String : String],
-                                   completionHandler: @escaping (Data?, HTTPURLResponse?, Error?) -> Void) {
-            calls.append((url, username, password, headers))
-            completionHandler(expected.0, expected.1, expected.2)
+        func fetchAccessToken(clientID: String, clientSecret: String,
+                              headers: [String : String],
+                              completionHandler: @escaping (FetchTokenResult) -> Void) {
+            calls.append((clientID: clientID, clientSecret: clientSecret, headers: headers))
+            completionHandler(result)
         }
     }
 
@@ -147,11 +177,11 @@ final class OAuthTests: XCTestCase {
             // Given
             // Create a fake client that returns valid JSON data and a
             // successful response
-            let fakeClient = FakeClient(expected: (jsonData, goodResponse, nil))
+            let fakeFetcher = FakeTokenFetcher(result: .success(token))
             let credentials = try SpotifyClientCredentials(
                 clientID: clientID,
                 clientSecret: clientSecret,
-                httpClient: fakeClient
+                fetcher: fakeFetcher
             )
             // When
             credentials.fetchAccessToken { result in
@@ -165,11 +195,12 @@ final class OAuthTests: XCTestCase {
                     XCTAssertEqual(self.scope, tokenInfo.scope)
                     XCTAssertEqual(self.refreshToken, tokenInfo.refreshToken)
                     // Ensure that the network call uses the correct input
-                    XCTAssertEqual(self.clientID, fakeClient.calls[0].username)
+                    XCTAssertEqual(self.clientID, fakeFetcher.calls[0].clientID)
                     XCTAssertEqual(
                         self.clientSecret,
-                        fakeClient.calls[0].password
+                        fakeFetcher.calls[0].clientSecret
                     )
+                    XCTAssertEqual(self.headers, fakeFetcher.calls[0].headers)
                 case .failure(let error):
                     XCTFail("Unexpected failure: \(error)")
                 }
@@ -184,11 +215,11 @@ final class OAuthTests: XCTestCase {
             // Given
             let expectedError = FakeError.testError
             // Client returns an error
-            let fakeClient = FakeClient(expected: (nil, nil, expectedError))
+            let fakeFetcher = FakeTokenFetcher(result: .failure(expectedError))
             let credentials = try SpotifyClientCredentials(
                 clientID: clientID,
                 clientSecret: clientSecret,
-                httpClient: fakeClient
+                fetcher: fakeFetcher
             )
             // When
             credentials.fetchAccessToken { result in
@@ -201,82 +232,12 @@ final class OAuthTests: XCTestCase {
                     // Ensure error is as expected
                     XCTAssertEqual(expectedError, error as? FakeError)
                     // Ensure that the call used the correct input
-                    XCTAssertEqual(self.clientID, fakeClient.calls[0].username)
+                    XCTAssertEqual(self.clientID, fakeFetcher.calls[0].clientID)
                     XCTAssertEqual(
                         self.clientSecret,
-                        fakeClient.calls[0].password
+                        fakeFetcher.calls[0].clientSecret
                     )
-                }
-            }
-        } catch {
-            XCTFail("Unexpected failure: \(error)")
-        }
-    }
-
-    func testFetchAccessTokenNilBody() {
-        do {
-            // Given
-            // The network will give a good response and a nil response body
-            let fakeClient = FakeClient(expected: (nil, goodResponse, nil))
-            let credentials = try SpotifyClientCredentials(
-                clientID: clientID,
-                clientSecret: clientSecret,
-                httpClient: fakeClient
-            )
-            // When
-            credentials.fetchAccessToken { result in
-                // Then
-                switch result {
-                case .success(_):
-                    // Ensure failure occurs
-                    XCTFail("Unexpected success")
-                case .failure(let error):
-                    // Ensure error is as expected
-                    guard case .nilBody? = error as? SpotifyAPIError else {
-                        XCTFail("Expected nil body error. Received \(error)")
-                        return
-                    }
-                    // Ensure that the call used the correct input
-                    XCTAssertEqual(self.clientID, fakeClient.calls[0].username)
-                    XCTAssertEqual(
-                        self.clientSecret,
-                        fakeClient.calls[0].password
-                    )
-                }
-            }
-        } catch {
-            XCTFail("Unexpected failure: \(error)")
-        }
-    }
-
-    func testFetchAccessTokenInvalidResponse() {
-        do {
-            // Given
-            // The network will return a 404
-            let fakeClient = FakeClient(expected: (nil, badResponse, nil))
-            let credentials = try SpotifyClientCredentials(
-                clientID: clientID,
-                clientSecret: clientSecret,
-                httpClient: fakeClient
-            )
-            // When
-            credentials.fetchAccessToken { result in
-                // Then
-                switch result {
-                case .success(_):
-                    XCTFail("Unexpected success")
-                case .failure(let error):
-                    // Ensure error is as expected
-                    guard case .invalidResponse? = error as? SpotifyAPIError else {
-                        XCTFail("Expected nil body error. Received \(error)")
-                        return
-                    }
-                    // Ensure that the call used the correct input
-                    XCTAssertEqual(self.clientID, fakeClient.calls[0].username)
-                    XCTAssertEqual(
-                        self.clientSecret,
-                        fakeClient.calls[0].password
-                    )
+                    XCTAssertEqual(self.headers, fakeFetcher.calls[0].headers)
                 }
             }
         } catch {
@@ -288,10 +249,9 @@ final class OAuthTests: XCTestCase {
         ("testSpotifyClientCredentialsInvalidInput", testSpotifyClientCredentialsInvalidInput),
         ("testSpotifyClientCredentialsValidInput", testSpotifyClientCredentialsValidInput),
         ("testFromJSON", testFromJSON),
-        ("testFromJSONMissingRefreshToken", testFromJSONMissingRefreshToken),
+        ("testFromSpotify", testFromSpotify),
+        ("testFromSpotifyMissingRefreshToken", testFromSpotifyMissingRefreshToken),
         ("testFetchAccessToken", testFetchAccessToken),
         ("testFetchAccessTokenNetworkError", testFetchAccessTokenNetworkError),
-        ("testFetchAccessTokenNilBody", testFetchAccessTokenNilBody),
-        ("testFetchAccessTokenInvalidResponse", testFetchAccessTokenInvalidResponse),
     ]
 }
