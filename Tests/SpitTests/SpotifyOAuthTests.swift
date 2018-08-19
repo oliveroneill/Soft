@@ -592,6 +592,152 @@ final class SpotifyOAuthTests: XCTestCase {
         }
     }
 
+    /// Helper function for comparing URLs since the query parameters may be
+    /// out of order
+    ///
+    /// - Parameters:
+    ///   - first: The first URL to compare
+    ///   - second: The second URL to compare
+    func compareURLsIgnoringQueryParamOrder(first: URL, second: URL, file: StaticString = #file, line: UInt = #line) {
+        guard let components = URLComponents(url: first, resolvingAgainstBaseURL: false) else {
+            self.recordFailure(
+                withDescription: "Unexpected nil",
+                inFile: String(describing: file),
+                atLine: Int(line), expected: true
+            )
+            return
+        }
+        guard let expected = URLComponents(url: second, resolvingAgainstBaseURL: false) else {
+            self.recordFailure(
+                withDescription: "Unexpected nil",
+                inFile: String(describing: file),
+                atLine: Int(line), expected: true
+            )
+            return
+        }
+        // Compare the query items once they're sorted
+        XCTAssertEqual(
+            expected.queryItems?.sorted {$0.name < $1.name},
+            components.queryItems?.sorted {$0.name < $1.name},
+            file: file, line: line
+        )
+        // Get the query string out so we can compare the rest
+        guard let firstQuery = first.query else {
+            self.recordFailure(
+                withDescription: "Unexpected nil",
+                inFile: String(describing: file),
+                atLine: Int(line), expected: true
+            )
+            return
+        }
+        guard let secondQuery = second.query else {
+            self.recordFailure(
+                withDescription: "Unexpected nil",
+                inFile: String(describing: file),
+                atLine: Int(line), expected: true
+            )
+            return
+        }
+        // Compare the URL without the query string
+        XCTAssertEqual(
+            first.absoluteString.replacingOccurrences(of: firstQuery, with: ""),
+            second.absoluteString.replacingOccurrences(of: secondQuery, with: ""),
+            file: file, line: line
+        )
+
+    }
+
+    func testGetAuthorizeURL() {
+        let error = FakeError.testError
+        let fakeFetcher = FakeTokenFetcher(result: .failure(error))
+        let fileHandler = FakeFileHandler(readReturns: .error(error))
+        do {
+            let oauth = try SpotifyOAuth(
+                clientID: clientID, clientSecret: clientSecret,
+                redirectURI: URL(string: redirectURI)!, state: state,
+                scope: scope, cachePath: cachePath, fetcher: fakeFetcher,
+                fileHandler: fileHandler
+            )
+            let url = try oauth.getAuthorizeURL()
+            let expectedURL = URL(
+                string: "https://accounts.spotify.com/authorize?redirect_uri=\(redirectURI)&response_type=code&scope=\(scope)&state=\(state)&client_id=\(clientID)"
+            )!
+            compareURLsIgnoringQueryParamOrder(first: url, second: expectedURL)
+
+        } catch {
+            XCTFail("Unexpected failure: \(error)")
+        }
+    }
+
+    func testGetAuthorizeURLMultipleScopes() {
+        let scope = "user-read-private user-read-public"
+        let error = FakeError.testError
+        let fakeFetcher = FakeTokenFetcher(result: .failure(error))
+        let fileHandler = FakeFileHandler(readReturns: .error(error))
+        do {
+            let oauth = try SpotifyOAuth(
+                clientID: clientID, clientSecret: clientSecret,
+                redirectURI: URL(string: redirectURI)!, state: state,
+                scope: scope, cachePath: cachePath, fetcher: fakeFetcher,
+                fileHandler: fileHandler
+            )
+            let encodedScope = "user-read-private%20user-read-public"
+            let url = try oauth.getAuthorizeURL()
+            let expectedURL = URL(
+                string: "https://accounts.spotify.com/authorize?redirect_uri=\(redirectURI)&response_type=code&scope=\(encodedScope)&state=\(state)&client_id=\(clientID)"
+                )!
+            compareURLsIgnoringQueryParamOrder(first: url, second: expectedURL)
+
+        } catch {
+            XCTFail("Unexpected failure: \(error)")
+        }
+    }
+
+    func testGetAuthorizeURLWithCustomState() {
+        let state = "anotherState"
+        let error = FakeError.testError
+        let fakeFetcher = FakeTokenFetcher(result: .failure(error))
+        let fileHandler = FakeFileHandler(readReturns: .error(error))
+        do {
+            let oauth = try SpotifyOAuth(
+                clientID: clientID, clientSecret: clientSecret,
+                redirectURI: URL(string: redirectURI)!, state: self.state,
+                scope: scope, cachePath: cachePath, fetcher: fakeFetcher,
+                fileHandler: fileHandler
+            )
+            let url = try oauth.getAuthorizeURL(state: state)
+            let expectedURL = URL(
+                string: "https://accounts.spotify.com/authorize?redirect_uri=\(redirectURI)&response_type=code&scope=\(scope)&state=\(state)&client_id=\(clientID)"
+                )!
+            compareURLsIgnoringQueryParamOrder(first: url, second: expectedURL)
+
+        } catch {
+            XCTFail("Unexpected failure: \(error)")
+        }
+    }
+
+    func testGetAuthorizeURLWithShowDialog() {
+        let error = FakeError.testError
+        let fakeFetcher = FakeTokenFetcher(result: .failure(error))
+        let fileHandler = FakeFileHandler(readReturns: .error(error))
+        do {
+            let oauth = try SpotifyOAuth(
+                clientID: clientID, clientSecret: clientSecret,
+                redirectURI: URL(string: redirectURI)!, state: state,
+                scope: scope, cachePath: cachePath, fetcher: fakeFetcher,
+                fileHandler: fileHandler
+            )
+            let url = try oauth.getAuthorizeURL(showDialog: true)
+            let expectedURL = URL(
+                string: "https://accounts.spotify.com/authorize?redirect_uri=\(redirectURI)&response_type=code&scope=\(scope)&state=\(state)&client_id=\(clientID)&show_dialog=true"
+                )!
+            compareURLsIgnoringQueryParamOrder(first: url, second: expectedURL)
+
+        } catch {
+            XCTFail("Unexpected failure: \(error)")
+        }
+    }
+
     static var allTests = [
         ("testSpotifyOAuthInvalidInput", testSpotifyOAuthInvalidInput),
         ("testSpotifyOAuthValidInput", testSpotifyOAuthValidInput),
@@ -603,5 +749,9 @@ final class SpotifyOAuthTests: XCTestCase {
         ("testGetCachedTokenMismatchScope", testGetCachedTokenMismatchScope),
         ("testGetCachedTokenExpired", testGetCachedTokenExpired),
         ("testGetCachedTokenExpiredWithoutRefreshToken", testGetCachedTokenExpiredWithoutRefreshToken),
+        ("testGetAuthorizeURL", testGetAuthorizeURL),
+        ("testGetAuthorizeURLMultipleScopes", testGetAuthorizeURLMultipleScopes),
+        ("testGetAuthorizeURLWithCustomState", testGetAuthorizeURLWithCustomState),
+        ("testGetAuthorizeURLWithShowDialog", testGetAuthorizeURLWithShowDialog),
     ]
 }

@@ -25,6 +25,15 @@ enum CachedTokenError: Error {
     case noRefreshToken
 }
 
+/// Errors related to building the authorization URL
+///
+/// - invalidQueryParams: Query parameters were invalid
+/// - invalidURL: The URL was invalid
+enum AuthorizationURLError: Error {
+    case invalidQueryParams
+    case invalidURL
+}
+
 /// Authorization for spotify
 struct SpotifyOAuth {
     let clientID: String
@@ -155,5 +164,53 @@ struct SpotifyOAuth {
     /// - Throws: If the write was unsuccessful
     private func saveToken(tokenInfo: TokenInfo) throws {
         try fileHandler.write(data: tokenInfo.toJSON(), to: cachePath)
+    }
+
+    /// Parse URL to retrieve code for authorization
+    ///
+    /// - Parameter url: URL redirected to as a response to authorization
+    /// request
+    /// - Returns: The code or nil if there was no code present
+    func parseResponseCode(url: String) -> String? {
+        if let remainder = url.components(separatedBy: "?code=").first{
+            guard let code = remainder.split(separator: "&").first else {
+                return nil
+            }
+            return String(code)
+        }
+        return nil
+    }
+
+    /// Gets the URL to use to authorize this app
+    ///
+    /// - Parameters:
+    ///   - state: Optional state parameter. The state on self will be used
+    ///   otherwise
+    ///   - showDialog:
+    /// - Returns: URL to request authorization for this OAuth object
+    /// - Throws: If an error occurs while creating the URL
+    func getAuthorizeURL(state: String? = nil, showDialog: Bool = false) throws -> URL {
+        var payload: [String:String] = [
+            "client_id": clientID,
+            "response_type": "code",
+            "redirect_uri": redirectURI.absoluteString,
+            "scope": scope
+        ]
+        payload["state"] = state ?? self.state
+        if showDialog {
+            payload["show_dialog"] = "true"
+        }
+        var components = URLComponents()
+        components.queryItems = payload.map {
+            URLQueryItem(name: $0, value: $1.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed))
+        }
+        guard let queryString = components.query else {
+            throw AuthorizationURLError.invalidQueryParams
+        }
+        let authorizeURL = "https://accounts.spotify.com/authorize?" + queryString
+        guard let url = URL(string: authorizeURL) else {
+            throw AuthorizationURLError.invalidURL
+        }
+        return url
     }
 }
