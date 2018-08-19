@@ -746,6 +746,14 @@ final class SpotifyOAuthTests: XCTestCase {
         }
     }
 
+    func testParseResponseCode() {
+        let result = SpotifyOAuth.parseResponseCode(url: "http://localhost:8080?code=\(code)&state=Wiu6mRqfDQyZz0QR")
+        XCTAssertEqual(code, result)
+
+        // Test error case
+        XCTAssertNil(SpotifyOAuth.parseResponseCode(url: "http://localhost:8080"))
+    }
+
     static var allTests = [
         ("testSpotifyOAuthInvalidInput", testSpotifyOAuthInvalidInput),
         ("testSpotifyOAuthValidInput", testSpotifyOAuthValidInput),
@@ -761,5 +769,6 @@ final class SpotifyOAuthTests: XCTestCase {
         ("testGetAuthorizeURLMultipleScopes", testGetAuthorizeURLMultipleScopes),
         ("testGetAuthorizeURLWithCustomState", testGetAuthorizeURLWithCustomState),
         ("testGetAuthorizeURLWithShowDialog", testGetAuthorizeURLWithShowDialog),
+        ("testParseResponseCode", testParseResponseCode),
     ]
 }

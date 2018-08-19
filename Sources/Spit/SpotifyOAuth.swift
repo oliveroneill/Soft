@@ -171,14 +171,16 @@ struct SpotifyOAuth {
     /// - Parameter url: URL redirected to as a response to authorization
     /// request
     /// - Returns: The code or nil if there was no code present
-    func parseResponseCode(url: String) -> String? {
-        if let remainder = url.components(separatedBy: "?code=").first{
-            guard let code = remainder.split(separator: "&").first else {
-                return nil
-            }
-            return String(code)
+    static func parseResponseCode(url: String) -> String? {
+        let components = url.components(separatedBy: "?code=")
+        guard components.count > 1 else {
+            return nil
         }
-        return nil
+        let remainder = components[1]
+        guard let code = remainder.split(separator: "&").first else {
+            return nil
+        }
+        return String(code)
     }
 
     /// Gets the URL to use to authorize this app
