@@ -648,6 +648,8 @@ final class SpotifyOAuthTests: XCTestCase {
     }
 
     func testGetAuthorizeURL() {
+        // This error will never be called since the fetcher and file handler
+        // will not be used
         let error = FakeError.testError
         let fakeFetcher = FakeTokenFetcher(result: .failure(error))
         let fileHandler = FakeFileHandler(readReturns: .error(error))
@@ -671,6 +673,8 @@ final class SpotifyOAuthTests: XCTestCase {
 
     func testGetAuthorizeURLMultipleScopes() {
         let scope = "user-read-private user-read-public"
+        // This error will never be called since the fetcher and file handler
+        // will not be used
         let error = FakeError.testError
         let fakeFetcher = FakeTokenFetcher(result: .failure(error))
         let fileHandler = FakeFileHandler(readReturns: .error(error))
@@ -695,6 +699,8 @@ final class SpotifyOAuthTests: XCTestCase {
 
     func testGetAuthorizeURLWithCustomState() {
         let state = "anotherState"
+        // This error will never be called since the fetcher and file handler
+        // will not be used
         let error = FakeError.testError
         let fakeFetcher = FakeTokenFetcher(result: .failure(error))
         let fileHandler = FakeFileHandler(readReturns: .error(error))
@@ -717,6 +723,8 @@ final class SpotifyOAuthTests: XCTestCase {
     }
 
     func testGetAuthorizeURLWithShowDialog() {
+        // This error will never be called since the fetcher and file handler
+        // will not be used
         let error = FakeError.testError
         let fakeFetcher = FakeTokenFetcher(result: .failure(error))
         let fileHandler = FakeFileHandler(readReturns: .error(error))
