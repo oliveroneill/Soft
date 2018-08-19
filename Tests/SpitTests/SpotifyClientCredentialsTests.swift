@@ -86,7 +86,6 @@ final class SpotifyClientCredentialsTests: XCTestCase {
         "expires_at": \(expiresAt.timeIntervalSinceReferenceDate)
         }
         """
-        print(json)
         guard let jsonData = json.data(using: .utf8) else {
             XCTFail("Unable to convert string to bytes")
             return
