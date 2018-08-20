@@ -1,5 +1,5 @@
 import XCTest
-@testable import Spit
+@testable import Soft
 
 final class SpotifyTokenFetcherTests: XCTestCase {
     /// A good response with 200 status code used for testing status code

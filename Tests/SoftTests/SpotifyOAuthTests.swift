@@ -1,5 +1,5 @@
 import XCTest
-@testable import Spit
+@testable import Soft
 
 final class SpotifyOAuthTests: XCTestCase {
     // Test input data

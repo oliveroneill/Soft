@@ -1,8 +1,8 @@
 import XCTest
 
-import SpitTests
+import SoftTests
 
 var tests = [XCTestCaseEntry]()
-tests += SpitTests.__allTests()
+tests += SoftTests.__allTests()
 
 XCTMain(tests)
