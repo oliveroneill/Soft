@@ -209,11 +209,4 @@ final class SpotifyTokenFetcherTests: XCTestCase {
             }
         }
     }
-
-    static var allTests = [
-        ("testFetchAccessToken", testFetchAccessToken),
-        ("testFetchAccessTokenNetworkError", testFetchAccessTokenNetworkError),
-        ("testFetchAccessTokenNilBody", testFetchAccessTokenNilBody),
-        ("testFetchAccessTokenInvalidResponse", testFetchAccessTokenInvalidResponse),
-    ]
 }

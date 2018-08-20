@@ -243,14 +243,4 @@ final class SpotifyClientCredentialsTests: XCTestCase {
             XCTFail("Unexpected failure: \(error)")
         }
     }
-
-    static var allTests = [
-        ("testSpotifyClientCredentialsInvalidInput", testSpotifyClientCredentialsInvalidInput),
-        ("testSpotifyClientCredentialsValidInput", testSpotifyClientCredentialsValidInput),
-        ("testFromJSON", testFromJSON),
-        ("testFromSpotify", testFromSpotify),
-        ("testFromSpotifyMissingRefreshToken", testFromSpotifyMissingRefreshToken),
-        ("testFetchAccessToken", testFetchAccessToken),
-        ("testFetchAccessTokenNetworkError", testFetchAccessTokenNetworkError),
-    ]
 }

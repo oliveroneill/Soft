@@ -753,22 +753,4 @@ final class SpotifyOAuthTests: XCTestCase {
         // Test error case
         XCTAssertNil(SpotifyOAuth.parseResponseCode(url: "http://localhost:8080"))
     }
-
-    static var allTests = [
-        ("testSpotifyOAuthInvalidInput", testSpotifyOAuthInvalidInput),
-        ("testSpotifyOAuthValidInput", testSpotifyOAuthValidInput),
-        ("testFetchAccessToken", testFetchAccessToken),
-        ("testFetchAccessTokenNetworkError", testFetchAccessTokenNetworkError),
-        ("testScopeIsSubset", testScopeIsSubset),
-        ("testGetCachedToken", testGetCachedToken),
-        ("testGetCachedTokenInvalidData", testGetCachedTokenInvalidData),
-        ("testGetCachedTokenMismatchScope", testGetCachedTokenMismatchScope),
-        ("testGetCachedTokenExpired", testGetCachedTokenExpired),
-        ("testGetCachedTokenExpiredWithoutRefreshToken", testGetCachedTokenExpiredWithoutRefreshToken),
-        ("testGetAuthorizeURL", testGetAuthorizeURL),
-        ("testGetAuthorizeURLMultipleScopes", testGetAuthorizeURLMultipleScopes),
-        ("testGetAuthorizeURLWithCustomState", testGetAuthorizeURLWithCustomState),
-        ("testGetAuthorizeURLWithShowDialog", testGetAuthorizeURLWithShowDialog),
-        ("testParseResponseCode", testParseResponseCode),
-    ]
 }
