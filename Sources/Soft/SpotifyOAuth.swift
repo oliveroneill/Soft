@@ -1,7 +1,7 @@
 import Foundation
 
 /// Specifies the scope of Spotify Authorization
-typealias Scope = String
+public typealias Scope = String
 
 extension Scope {
     /// Whether the specified scope is a subset of self
@@ -35,7 +35,7 @@ enum AuthorizationURLError: Error {
 }
 
 /// Authorization for spotify
-struct SpotifyOAuth {
+public struct SpotifyOAuth {
     let clientID: String
     let clientSecret: String
     let redirectURI: URL
@@ -56,14 +56,37 @@ struct SpotifyOAuth {
     ///   - scope: The scope of authorization
     ///   - cachePath: Optionally specify where cached tokens should be stored
     ///   and retrieved
+    /// - Throws: If clientID or clientSecret are empty strings
+    public init(clientID: String, clientSecret: String, redirectURI: URL,
+                state: String, scope: Scope,
+                cachePath: URL = URL(fileURLWithPath: ".spotify_token_cache.json")) throws {
+        try self.init(
+            clientID: clientID, clientSecret: clientSecret,
+            redirectURI: redirectURI, state: state, scope: scope,
+            cachePath: cachePath, fetcher: SpotifyTokenFetcher(),
+            fileHandler: DataFileHandler()
+        )
+    }
+
+    /// Create a SpotifyOAuth instance
+    ///
+    /// - Parameters:
+    ///   - clientID: Spotify Client ID
+    ///   - clientSecret: Spotify Client Secret
+    ///   - redirectURI: Specify the URI that the request will be redirected to
+    ///   upon completion
+    ///   - state: Used for correlating requests and responses
+    ///   - scope: The scope of authorization
+    ///   - cachePath: Optionally specify where cached tokens should be stored
+    ///   and retrieved
     ///   - fetcher: Optional token fetcher implementation. Defaults to
     ///   SpotifyTokenFetcher
+    ///   - fileHandler: Optional implementation for file handling
     /// - Throws: If clientID or clientSecret are empty strings
     init(clientID: String, clientSecret: String, redirectURI: URL,
          state: String, scope: Scope,
          cachePath: URL = URL(fileURLWithPath: ".spotify_token_cache.json"),
-         fetcher: AuthorizationTokenFetcher = SpotifyTokenFetcher(),
-         fileHandler: FileHandler = DataFileHandler()) throws {
+         fetcher: AuthorizationTokenFetcher, fileHandler: FileHandler) throws {
         guard !clientID.isEmpty && !clientSecret.isEmpty else {
             throw InvalidCredentialsError.emptyInput
         }

@@ -8,7 +8,7 @@ enum InvalidCredentialsError: Error {
 }
 
 /// Holds client credentials. Used for gaining access tokens
-struct SpotifyClientCredentials {
+public struct SpotifyClientCredentials {
     let clientID: String
     let clientSecret: String
 
@@ -19,11 +19,24 @@ struct SpotifyClientCredentials {
     /// - Parameters:
     ///   - clientID: Spotify Client ID
     ///   - clientSecret: Spotify Client Secret
+    /// - Throws: If clientID or clientSecret are empty strings
+    public init(clientID: String, clientSecret: String) throws {
+        try self.init(
+            clientID: clientID, clientSecret: clientSecret,
+            fetcher: SpotifyTokenFetcher()
+        )
+    }
+
+    /// Create a SpotifyClientCredentials instance
+    ///
+    /// - Parameters:
+    ///   - clientID: Spotify Client ID
+    ///   - clientSecret: Spotify Client Secret
     ///   - fetcher: Optional token fetcher implementation. Defaults to
     ///   SpotifyTokenFetcher
     /// - Throws: If clientID or clientSecret are empty strings
     init(clientID: String, clientSecret: String,
-         fetcher: AuthorizationTokenFetcher = SpotifyTokenFetcher()) throws {
+         fetcher: AuthorizationTokenFetcher) throws {
         guard !clientID.isEmpty && !clientSecret.isEmpty else {
             throw InvalidCredentialsError.emptyInput
         }
