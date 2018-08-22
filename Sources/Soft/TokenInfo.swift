@@ -27,7 +27,7 @@ public func getToken(oauth: SpotifyOAuth, completionHandler: @escaping (FetchTok
             do {
                 let authURL = try oauth.getAuthorizeURL(state: state)
                 try WebBrowser.open(url: authURL)
-                print("Enter the URL you were directed to")
+                print("Enter the URL you were redirected to:")
                 guard let url = readLine() else {
                     completionHandler(.failure(GetTokenError.failedToReadLine))
                     return
