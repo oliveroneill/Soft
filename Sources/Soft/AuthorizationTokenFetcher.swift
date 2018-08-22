@@ -28,7 +28,7 @@ enum SpotifyAPIError: Error {
 /// - success: When the call succeeds, this will contain the deserialised token
 /// information
 /// - failure: When the call fails, this will contain the error
-enum FetchTokenResult {
+public enum FetchTokenResult {
     case success(TokenInfo)
     case failure(Error)
 }

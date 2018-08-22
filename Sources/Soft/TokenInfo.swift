@@ -1,7 +1,54 @@
 import Foundation
 
+import WebBrowser
+
+/// Errors caused by getToken
+///
+/// - failedToReadLine: When readLine returns nil
+/// - failedToParseCode: When the URL passed as input does not match the
+/// expected format
+enum GetTokenError: Error {
+    case failedToReadLine
+    case failedToParseCode
+}
+
+/// Get token via Spotify Authorization
+///
+/// - Parameters:
+///   - oauth: OAuth instance to make queries on
+///   - completionHandler: Called upon completion
+public func getToken(oauth: SpotifyOAuth, completionHandler: @escaping (FetchTokenResult) -> Void) {
+    oauth.getCachedToken { result in
+        switch result {
+        case .success(let token):
+            completionHandler(.success(token))
+        case .failure(_):
+            let state = "state"
+            do {
+                let authURL = try oauth.getAuthorizeURL(state: state)
+                try WebBrowser.open(url: authURL)
+                print("Enter the URL you were directed to")
+                guard let url = readLine() else {
+                    completionHandler(.failure(GetTokenError.failedToReadLine))
+                    return
+                }
+                guard let code = SpotifyOAuth.parseResponseCode(url: url) else {
+                    completionHandler(.failure(GetTokenError.failedToReadLine))
+                    return
+                }
+                oauth.fetchAccessToken(
+                    code: code,
+                    completionHandler: completionHandler
+                )
+            } catch {
+                completionHandler(.failure(error))
+            }
+        }
+    }
+}
+
 /// Spotify token-info
-struct TokenInfo: Codable {
+public struct TokenInfo: Codable {
     let accessToken: String
     let tokenType: String
     let scope: String

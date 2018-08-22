@@ -20,12 +20,30 @@
         }
       },
       {
+        "package": "ShellOut",
+        "repositoryURL": "https://github.com/JohnSundell/ShellOut.git",
+        "state": {
+          "branch": null,
+          "revision": "f1c253a34a40df4bfd268b09fdb101b059f6d52d",
+          "version": "2.1.0"
+        }
+      },
+      {
         "package": "SwiftyRequest",
         "repositoryURL": "https://github.com/IBM-Swift/SwiftyRequest.git",
         "state": {
           "branch": null,
-          "revision": "82d49d1bde19c4acfc63c276b67c8a25ac434e52",
-          "version": "1.1.2"
+          "revision": "617de05a8bea00acf0c1fd68fd8c42aa7a42c036",
+          "version": "1.1.3"
+        }
+      },
+      {
+        "package": "WebBrowser",
+        "repositoryURL": "https://github.com/oliveroneill/WebBrowser.git",
+        "state": {
+          "branch": "master",
+          "revision": "f0f5380417a2d53dd02690ddb32e34a38a2b7600",
+          "version": null
         }
       }
     ]
