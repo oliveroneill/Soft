@@ -17,7 +17,7 @@ final class SpotifyTokenFetcherTests: XCTestCase {
     // Test input data
     let clientID = "client-id-123"
     let clientSecret = "A_SECRET_KEY"
-    let headers = ["test_key": "test_val", "x": "y"]
+    let parameters = ["test_key": "test_val", "x": "y"]
     let accessToken = "token-123"
     let tokenType = "Bearer"
     let scope = "client"
@@ -51,7 +51,7 @@ final class SpotifyTokenFetcherTests: XCTestCase {
     class FakeClient: HTTPClient {
         private let expected: (Data?, HTTPURLResponse?, Error?)
         /// Keeps track of calls to authenticationRequest
-        var calls: [(url: String, username: String, password: String, headers: [String : String])] = []
+        var calls: [(url: String, username: String, password: String, parameters: [String : String])] = []
 
         /// Create a fake network interface
         ///
@@ -62,9 +62,10 @@ final class SpotifyTokenFetcherTests: XCTestCase {
         }
 
         func authenticationRequest(url: String, username: String,
-                                   password: String, headers: [String : String],
+                                   password: String,
+                                   parameters: [String : String],
                                    completionHandler: @escaping (Data?, HTTPURLResponse?, Error?) -> Void) {
-            calls.append((url, username, password, headers))
+            calls.append((url, username, password, parameters))
             completionHandler(expected.0, expected.1, expected.2)
         }
     }
@@ -85,7 +86,7 @@ final class SpotifyTokenFetcherTests: XCTestCase {
         // When
         fetcher.fetchAccessToken(clientID: clientID,
                                  clientSecret: clientSecret,
-                                 headers: headers) { result in
+                                 parameters: parameters) { result in
             // Then
             // Ensure a successful result
             switch result {
@@ -102,8 +103,8 @@ final class SpotifyTokenFetcherTests: XCTestCase {
                     fakeClient.calls[0].password
                 )
                 XCTAssertEqual(
-                    self.headers,
-                    fakeClient.calls[0].headers
+                    self.parameters,
+                    fakeClient.calls[0].parameters
                 )
             case .failure(let error):
                 XCTFail("Unexpected failure: \(error)")
@@ -120,7 +121,7 @@ final class SpotifyTokenFetcherTests: XCTestCase {
         // When
         fetcher.fetchAccessToken(clientID: clientID,
                                  clientSecret: clientSecret,
-                                 headers: headers) { result in
+                                 parameters: parameters) { result in
             // Then
             switch result {
             case .success(_):
@@ -136,8 +137,8 @@ final class SpotifyTokenFetcherTests: XCTestCase {
                     fakeClient.calls[0].password
                 )
                 XCTAssertEqual(
-                    self.headers,
-                    fakeClient.calls[0].headers
+                    self.parameters,
+                    fakeClient.calls[0].parameters
                 )
             }
         }
@@ -151,7 +152,7 @@ final class SpotifyTokenFetcherTests: XCTestCase {
         // When
         fetcher.fetchAccessToken(clientID: clientID,
                                  clientSecret: clientSecret,
-                                 headers: headers) { result in
+                                 parameters: parameters) { result in
             // Then
             switch result {
             case .success(_):
@@ -170,8 +171,8 @@ final class SpotifyTokenFetcherTests: XCTestCase {
                     fakeClient.calls[0].password
                 )
                 XCTAssertEqual(
-                    self.headers,
-                    fakeClient.calls[0].headers
+                    self.parameters,
+                    fakeClient.calls[0].parameters
                 )
             }
         }
@@ -185,7 +186,7 @@ final class SpotifyTokenFetcherTests: XCTestCase {
         // When
         fetcher.fetchAccessToken(clientID: clientID,
                                  clientSecret: clientSecret,
-                                 headers: headers) { result in
+                                 parameters: parameters) { result in
             // Then
             switch result {
             case .success(_):
@@ -203,8 +204,8 @@ final class SpotifyTokenFetcherTests: XCTestCase {
                     fakeClient.calls[0].password
                 )
                 XCTAssertEqual(
-                    self.headers,
-                    fakeClient.calls[0].headers
+                    self.parameters,
+                    fakeClient.calls[0].parameters
                 )
             }
         }

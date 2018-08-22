@@ -8,7 +8,7 @@ protocol AuthorizationTokenFetcher {
     ///
     /// - Parameter completionHandler: Called with the result of the API call
     func fetchAccessToken(clientID: String, clientSecret: String,
-                          headers: [String:String],
+                          parameters: [String:String],
                           completionHandler: @escaping (FetchTokenResult) -> Void)
 }
 
@@ -48,13 +48,13 @@ class SpotifyTokenFetcher: AuthorizationTokenFetcher {
     ///
     /// - Parameter completionHandler: Called with the result of the API call
     func fetchAccessToken(clientID: String, clientSecret: String,
-                          headers: [String:String],
+                          parameters: [String:String],
                           completionHandler: @escaping (FetchTokenResult) -> Void) {
         // Make the request
         httpClient.authenticationRequest(
             url: apiURL, username: clientID, password: clientSecret,
             // Specify the grant type
-            headers: headers
+            parameters: parameters
         ) { body, response, error in
             // If there is an error then fail
             if let error = error {

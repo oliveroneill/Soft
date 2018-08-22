@@ -144,8 +144,8 @@ public struct SpotifyOAuth {
             "grant_type": "refresh_token"
         ]
         fetcher.fetchAccessToken(
-            clientID: clientID, clientSecret: clientSecret, headers: payload,
-            completionHandler: completionHandler
+            clientID: clientID, clientSecret: clientSecret,
+            parameters: payload, completionHandler: completionHandler
         )
     }
 
@@ -164,7 +164,7 @@ public struct SpotifyOAuth {
             "state": state
         ]
         fetcher.fetchAccessToken(
-            clientID: clientID, clientSecret: clientSecret, headers: payload,
+            clientID: clientID, clientSecret: clientSecret, parameters: payload,
             completionHandler: {result in
                 switch result {
                 case .success(let info):

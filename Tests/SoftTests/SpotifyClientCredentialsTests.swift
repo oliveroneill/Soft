@@ -22,7 +22,7 @@ final class SpotifyClientCredentialsTests: XCTestCase {
     let scope = "client"
     let refreshToken = "refresh-344"
     let expiresIn = 24
-    var headers = ["grant_type": "client_credentials"]
+    var parameters = ["grant_type": "client_credentials"]
 
     /// JSON Data created from the input data. This will be set in the setUp
     /// function
@@ -146,7 +146,7 @@ final class SpotifyClientCredentialsTests: XCTestCase {
     /// Fake token fetcher for mocking network interaction
     class FakeTokenFetcher: AuthorizationTokenFetcher {
         /// Keeps track of calls to fetchAccessToken
-        var calls: [(clientID: String, clientSecret: String, headers: [String : String])] = []
+        var calls: [(clientID: String, clientSecret: String, parameters: [String : String])] = []
         private let result: FetchTokenResult
 
         /// Create a FakeTokenFetcher
@@ -157,9 +157,9 @@ final class SpotifyClientCredentialsTests: XCTestCase {
         }
 
         func fetchAccessToken(clientID: String, clientSecret: String,
-                              headers: [String : String],
+                              parameters: [String : String],
                               completionHandler: @escaping (FetchTokenResult) -> Void) {
-            calls.append((clientID: clientID, clientSecret: clientSecret, headers: headers))
+            calls.append((clientID: clientID, clientSecret: clientSecret, parameters: parameters))
             completionHandler(result)
         }
     }
@@ -199,7 +199,10 @@ final class SpotifyClientCredentialsTests: XCTestCase {
                         self.clientSecret,
                         fakeFetcher.calls[0].clientSecret
                     )
-                    XCTAssertEqual(self.headers, fakeFetcher.calls[0].headers)
+                    XCTAssertEqual(
+                        self.parameters,
+                        fakeFetcher.calls[0].parameters
+                    )
                 case .failure(let error):
                     XCTFail("Unexpected failure: \(error)")
                 }
@@ -236,7 +239,10 @@ final class SpotifyClientCredentialsTests: XCTestCase {
                         self.clientSecret,
                         fakeFetcher.calls[0].clientSecret
                     )
-                    XCTAssertEqual(self.headers, fakeFetcher.calls[0].headers)
+                    XCTAssertEqual(
+                        self.parameters,
+                        fakeFetcher.calls[0].parameters
+                    )
                 }
             }
         } catch {

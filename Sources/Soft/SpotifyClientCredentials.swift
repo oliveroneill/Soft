@@ -52,7 +52,7 @@ public struct SpotifyClientCredentials {
         fetcher.fetchAccessToken(
             clientID: clientID,
             clientSecret: clientSecret,
-            headers: ["grant_type": "client_credentials"],
+            parameters: ["grant_type": "client_credentials"],
             completionHandler: completionHandler
         )
     }

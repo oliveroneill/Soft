@@ -15,7 +15,7 @@ final class SpotifyOAuthTests: XCTestCase {
     let expiresIn = 24
     let code = "fakeAuthorizationCode"
     // Headers are initialised in setUp
-    var headers: [String:String] = [:]
+    var parameters: [String:String] = [:]
     // Token is initialised in setUp
     var networkToken: TokenInfo!
     var networkTokenJSON: Data!
@@ -23,7 +23,7 @@ final class SpotifyOAuthTests: XCTestCase {
     var cachedTokenJSON: Data!
 
     override func setUp() {
-        headers = [
+        parameters = [
             "redirect_uri": redirectURI,
             "code": code,
             "grant_type": "authorization_code",
@@ -143,7 +143,7 @@ final class SpotifyOAuthTests: XCTestCase {
     /// Fake token fetcher for mocking network interaction
     class FakeTokenFetcher: AuthorizationTokenFetcher {
         /// Keeps track of calls to fetchAccessToken
-        var calls: [(clientID: String, clientSecret: String, headers: [String : String])] = []
+        var calls: [(clientID: String, clientSecret: String, parameters: [String : String])] = []
         private let result: FetchTokenResult
 
         /// Create a FakeTokenFetcher
@@ -154,9 +154,9 @@ final class SpotifyOAuthTests: XCTestCase {
         }
 
         func fetchAccessToken(clientID: String, clientSecret: String,
-                              headers: [String : String],
+                              parameters: [String : String],
                               completionHandler: @escaping (FetchTokenResult) -> Void) {
-            calls.append((clientID: clientID, clientSecret: clientSecret, headers: headers))
+            calls.append((clientID: clientID, clientSecret: clientSecret, parameters: parameters))
             completionHandler(result)
         }
     }
@@ -230,7 +230,10 @@ final class SpotifyOAuthTests: XCTestCase {
                         self.clientSecret,
                         fakeFetcher.calls[0].clientSecret
                     )
-                    XCTAssertEqual(self.headers, fakeFetcher.calls[0].headers)
+                    XCTAssertEqual(
+                        self.parameters,
+                        fakeFetcher.calls[0].parameters
+                    )
                     XCTAssertEqual(1, fileHandler.writeCalls.count)
                     XCTAssertEqual(0, fileHandler.readCalls.count)
                     do {
@@ -278,7 +281,10 @@ final class SpotifyOAuthTests: XCTestCase {
                         self.clientSecret,
                         fakeFetcher.calls[0].clientSecret
                     )
-                    XCTAssertEqual(self.headers, fakeFetcher.calls[0].headers)
+                    XCTAssertEqual(
+                        self.parameters,
+                        fakeFetcher.calls[0].parameters
+                    )
                     XCTAssertEqual(0, fileHandler.writeCalls.count)
                     XCTAssertEqual(0, fileHandler.readCalls.count)
                 }
@@ -320,7 +326,10 @@ final class SpotifyOAuthTests: XCTestCase {
                         self.clientSecret,
                         fakeFetcher.calls[0].clientSecret
                     )
-                    XCTAssertEqual(self.headers, fakeFetcher.calls[0].headers)
+                    XCTAssertEqual(
+                        self.parameters,
+                        fakeFetcher.calls[0].parameters
+                    )
                     XCTAssertEqual(1, fileHandler.writeCalls.count)
                     XCTAssertEqual(0, fileHandler.readCalls.count)
                     do {
@@ -495,7 +504,7 @@ final class SpotifyOAuthTests: XCTestCase {
                             "refresh_token": refreshToken,
                             "grant_type": "refresh_token"
                         ],
-                        fakeFetcher.calls[0].headers
+                        fakeFetcher.calls[0].parameters
                     )
                     // Ensure that the file handler call uses the correct input
                     XCTAssertEqual(0, fileHandler.writeCalls.count)
@@ -545,7 +554,7 @@ final class SpotifyOAuthTests: XCTestCase {
                             "refresh_token": refreshToken,
                             "grant_type": "refresh_token"
                         ],
-                        fakeFetcher.calls[0].headers
+                        fakeFetcher.calls[0].parameters
                     )
                     // Ensure that the file handler call uses the correct input
                     XCTAssertEqual(0, fileHandler.writeCalls.count)
