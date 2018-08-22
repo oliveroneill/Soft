@@ -227,7 +227,7 @@ public struct SpotifyOAuth {
         }
         var components = URLComponents()
         components.queryItems = payload.map {
-            URLQueryItem(name: $0, value: $1.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed))
+            URLQueryItem(name: $0, value: $1.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed))
         }
         guard let queryString = components.query else {
             throw AuthorizationURLError.invalidQueryParams
