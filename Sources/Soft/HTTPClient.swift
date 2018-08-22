@@ -28,6 +28,7 @@ class SwiftyRequestClient: HTTPClient {
             password: password
         )
         request.headerParameters = headers
+        request.contentType = "application/x-www-form-urlencoded"
         request.response(completionHandler: completionHandler)
     }
 }
