@@ -23,7 +23,7 @@ public func getToken(oauth: SpotifyOAuth, completionHandler: @escaping (FetchTok
         case .success(let token):
             completionHandler(.success(token))
         case .failure(_):
-            let state = "state"
+            let state = String.random(count: 16)
             do {
                 let authURL = try oauth.getAuthorizeURL(state: state)
                 try WebBrowser.open(url: authURL)
