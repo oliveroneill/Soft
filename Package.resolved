@@ -41,9 +41,9 @@
         "package": "WebBrowser",
         "repositoryURL": "https://github.com/oliveroneill/WebBrowser.git",
         "state": {
-          "branch": "master",
-          "revision": "9aac867eac5359fa99f369b333ae06a2b3f4f8cd",
-          "version": null
+          "branch": null,
+          "revision": "fd56bdcfd0f50396772ce96aca43ed76db02813f",
+          "version": "1.0.0"
         }
       }
     ]

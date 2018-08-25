@@ -68,6 +68,22 @@ final class SpotifyTokenFetcherTests: XCTestCase {
             calls.append((url, username, password, parameters))
             completionHandler(expected.0, expected.1, expected.2)
         }
+
+        func get(url: String, parameters: [String:String],
+                 headers: [String : String],
+                 completionHandler: @escaping (Data?, HTTPURLResponse?, Error?) -> Void) {}
+
+        func post(url: String, payload: Data,
+                  headers: [String : String],
+                  completionHandler: @escaping (Data?, HTTPURLResponse?, Error?) -> Void) {}
+
+        func put(url: String, payload: Data,
+                 headers: [String : String],
+                 completionHandler: @escaping (Data?, HTTPURLResponse?, Error?) -> Void) {}
+
+        func delete(url: String, payload: Data,
+                    headers: [String : String],
+                    completionHandler: @escaping (Data?, HTTPURLResponse?, Error?) -> Void) {}
     }
 
     /// A fake error for testing purposes

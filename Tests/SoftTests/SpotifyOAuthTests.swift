@@ -144,18 +144,18 @@ final class SpotifyOAuthTests: XCTestCase {
     class FakeTokenFetcher: AuthorizationTokenFetcher {
         /// Keeps track of calls to fetchAccessToken
         var calls: [(clientID: String, clientSecret: String, parameters: [String : String])] = []
-        private let result: FetchTokenResult
+        private let result: Result<TokenInfo>
 
         /// Create a FakeTokenFetcher
         ///
         /// - Parameter result: The result to be returned from fetchAccessToken
-        init(result: FetchTokenResult) {
+        init(result: Result<TokenInfo>) {
             self.result = result
         }
 
         func fetchAccessToken(clientID: String, clientSecret: String,
                               parameters: [String : String],
-                              completionHandler: @escaping (FetchTokenResult) -> Void) {
+                              completionHandler: @escaping (Result<TokenInfo>) -> Void) {
             calls.append((clientID: clientID, clientSecret: clientSecret, parameters: parameters))
             completionHandler(result)
         }

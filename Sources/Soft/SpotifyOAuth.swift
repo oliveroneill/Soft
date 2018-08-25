@@ -104,7 +104,7 @@ public struct SpotifyOAuth {
     /// Errors can be found in CachedTokenError.
     ///
     /// - Parameter completionHandler: Called with the result
-    func getCachedToken(completionHandler: @escaping (FetchTokenResult) -> Void) {
+    func getCachedToken(completionHandler: @escaping (Result<TokenInfo>) -> Void) {
         do {
             let data = try fileHandler.read(from: cachePath)
             let info = try TokenInfo.fromJSON(data: data)
@@ -138,7 +138,7 @@ public struct SpotifyOAuth {
     ///   - refreshToken: The refresh token from the Spotify API response
     ///   - completionHandler: Called upon completion of refresh
     private func refreshAccessToken(refreshToken: String,
-                                    completionHandler: @escaping (FetchTokenResult) -> Void) {
+                                    completionHandler: @escaping (Result<TokenInfo>) -> Void) {
         let payload = [
             "refresh_token": refreshToken,
             "grant_type": "refresh_token"
@@ -155,7 +155,7 @@ public struct SpotifyOAuth {
     ///   - code: Authorization code
     ///   - completionHandler: Called upon completion
     func fetchAccessToken(code: String,
-                          completionHandler: @escaping (FetchTokenResult) -> Void) {
+                          completionHandler: @escaping (Result<TokenInfo>) -> Void) {
         let payload = [
             "redirect_uri": redirectURI.absoluteString,
             "code": code,

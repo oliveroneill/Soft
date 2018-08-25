@@ -9,7 +9,7 @@ protocol AuthorizationTokenFetcher {
     /// - Parameter completionHandler: Called with the result of the API call
     func fetchAccessToken(clientID: String, clientSecret: String,
                           parameters: [String:String],
-                          completionHandler: @escaping (FetchTokenResult) -> Void)
+                          completionHandler: @escaping (Result<TokenInfo>) -> Void)
 }
 
 /// Errors from Spotify API errors
@@ -21,16 +21,6 @@ enum SpotifyAPIError: Error {
     case nilResponse
     case invalidResponse(HTTPURLResponse)
     case nilBody
-}
-
-/// A result type for fetchAccessToken
-///
-/// - success: When the call succeeds, this will contain the deserialised token
-/// information
-/// - failure: When the call fails, this will contain the error
-public enum FetchTokenResult {
-    case success(TokenInfo)
-    case failure(Error)
 }
 
 /// Used to get an access token from the Spotify API
@@ -49,7 +39,7 @@ class SpotifyTokenFetcher: AuthorizationTokenFetcher {
     /// - Parameter completionHandler: Called with the result of the API call
     func fetchAccessToken(clientID: String, clientSecret: String,
                           parameters: [String:String],
-                          completionHandler: @escaping (FetchTokenResult) -> Void) {
+                          completionHandler: @escaping (Result<TokenInfo>) -> Void) {
         // Make the request
         httpClient.authenticationRequest(
             url: apiURL, username: clientID, password: clientSecret,

@@ -15,6 +15,22 @@ protocol HTTPClient {
     func authenticationRequest(url: String, username: String, password: String,
                                parameters: [String:String],
                                completionHandler: @escaping (Data?, HTTPURLResponse?, Error?) -> Void)
+
+    func get(url: String, parameters: [String:String],
+             headers: [String:String],
+             completionHandler: @escaping (Data?, HTTPURLResponse?, Error?) -> Void)
+
+    func post(url: String, payload: Data,
+              headers: [String:String],
+              completionHandler: @escaping (Data?, HTTPURLResponse?, Error?) -> Void)
+
+    func put(url: String, payload: Data,
+             headers: [String:String],
+             completionHandler: @escaping (Data?, HTTPURLResponse?, Error?) -> Void)
+
+    func delete(url: String, payload: Data,
+                headers: [String:String],
+                completionHandler: @escaping (Data?, HTTPURLResponse?, Error?) -> Void)
 }
 
 /// An implementation of HTTPClient using SwiftyRequest
@@ -29,6 +45,46 @@ class SwiftyRequestClient: HTTPClient {
         )
         request.queryItems = parameters.map {URLQueryItem(name: $0, value: $1)}
         request.contentType = "application/x-www-form-urlencoded"
+        request.response(completionHandler: completionHandler)
+    }
+
+    func get(url: String, parameters: [String:String],
+             headers: [String:String],
+             completionHandler: @escaping (Data?, HTTPURLResponse?, Error?) -> Void) {
+        let request = RestRequest(method: .get, url: url)
+        request.queryItems = parameters.map {URLQueryItem(name: $0, value: $1)}
+        request.headerParameters = headers
+        request.contentType = "application/json"
+        request.response(completionHandler: completionHandler)
+    }
+
+    func post(url: String, payload: Data,
+              headers: [String:String],
+              completionHandler: @escaping (Data?, HTTPURLResponse?, Error?) -> Void) {
+        let request = RestRequest(method: .get, url: url)
+        request.messageBody = payload
+        request.headerParameters = headers
+        request.contentType = "application/json"
+        request.response(completionHandler: completionHandler)
+    }
+
+    func put(url: String, payload: Data,
+             headers: [String:String],
+             completionHandler: @escaping (Data?, HTTPURLResponse?, Error?) -> Void) {
+        let request = RestRequest(method: .get, url: url)
+        request.messageBody = payload
+        request.headerParameters = headers
+        request.contentType = "application/json"
+        request.response(completionHandler: completionHandler)
+    }
+
+    func delete(url: String, payload: Data,
+                headers: [String:String],
+                completionHandler: @escaping (Data?, HTTPURLResponse?, Error?) -> Void) {
+        let request = RestRequest(method: .get, url: url)
+        request.messageBody = payload
+        request.headerParameters = headers
+        request.contentType = "application/json"
         request.response(completionHandler: completionHandler)
     }
 }
