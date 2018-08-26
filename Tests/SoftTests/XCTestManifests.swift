@@ -1,5 +1,14 @@
 import XCTest
 
+extension SpotifyAuthorizedHTTPClientTests {
+    static let __allTests = [
+        ("testDelete", testDelete),
+        ("testGet", testGet),
+        ("testPost", testPost),
+        ("testPut", testPut),
+    ]
+}
+
 extension SpotifyClientCredentialsTests {
     static let __allTests = [
         ("testFetchAccessToken", testFetchAccessToken),
@@ -9,6 +18,12 @@ extension SpotifyClientCredentialsTests {
         ("testFromSpotifyMissingRefreshToken", testFromSpotifyMissingRefreshToken),
         ("testSpotifyClientCredentialsInvalidInput", testSpotifyClientCredentialsInvalidInput),
         ("testSpotifyClientCredentialsValidInput", testSpotifyClientCredentialsValidInput),
+    ]
+}
+
+extension SpotifyClientTests {
+    static let __allTests = [
+        ("testTrack", testTrack),
     ]
 }
 
@@ -46,7 +61,9 @@ extension SpotifyTokenFetcherTests {
 #if !os(macOS)
 public func __allTests() -> [XCTestCaseEntry] {
     return [
+        testCase(SpotifyAuthorizedHTTPClientTests.__allTests),
         testCase(SpotifyClientCredentialsTests.__allTests),
+        testCase(SpotifyClientTests.__allTests),
         testCase(SpotifyOAuthTests.__allTests),
         testCase(SpotifyTokenFetcherTests.__allTests),
     ]
