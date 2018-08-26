@@ -116,4 +116,18 @@ public struct SpotifyClient {
             )
         }
     }
+
+    /// Get a single artist given the ID
+    ///
+    /// - Parameters:
+    ///   - artistID: Spotify artist ID
+    ///   - completionHandler: Called on completion
+    public func artist(artistID: String, completionHandler: @escaping (Result<Artist>) -> Void) {
+        let url = apiURL + "artists/" + artistID
+        client.get(url: url, parameters: [:], headers: [:]) { body, response, error in
+            completionHandler(
+                self.decodeBody(body: body, response: response, error: error)
+            )
+        }
+    }
 }

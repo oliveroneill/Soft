@@ -49,3 +49,14 @@ public struct Track: Decodable, Equatable {
 public struct Tracks: Decodable, Equatable {
     let tracks: [Track]
 }
+
+public struct Artist: Decodable, Equatable {
+    let externalUrls: [String:String]
+    let genres: [String]
+    let href: String
+    let id: String
+    let images: [Image]
+    let name: String
+    let popularity: UInt
+    let uri: String
+}

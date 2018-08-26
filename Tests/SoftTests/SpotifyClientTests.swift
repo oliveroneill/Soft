@@ -310,4 +310,58 @@ final class SpotifyClientTests: XCTestCase {
             }
         }
     }
+
+    func testArtist() {
+        let images = [
+            Image(
+                url: "https://i.scdn.co/image/eb266625dab075341e8c4378a177a27370f91903",
+                width: 1000,
+                height: 816
+            )
+        ]
+        let expectedArtist = Artist(
+            externalUrls: ["spotify" : "https://open.spotify.com/artist/0OdUWJ0sBjDrqHygGUXeCF"],
+            genres: ["indie folk", "indie pop"],
+            href: "https://api.spotify.com/v1/artists/0OdUWJ0sBjDrqHygGUXeCF",
+            id: "0OdUWJ0sBjDrqHygGUXeCF",
+            images: images,
+            name: "Band of Horses",
+            popularity: 59,
+            uri: "spotify:artist:0OdUWJ0sBjDrqHygGUXeCF"
+        )
+        let data = """
+{
+  "external_urls" : {
+    "spotify" : "https://open.spotify.com/artist/0OdUWJ0sBjDrqHygGUXeCF"
+  },
+  "followers" : {
+    "href" : null,
+    "total" : 306565
+  },
+  "genres" : [ "indie folk", "indie pop" ],
+  "href" : "https://api.spotify.com/v1/artists/0OdUWJ0sBjDrqHygGUXeCF",
+  "id" : "0OdUWJ0sBjDrqHygGUXeCF",
+  "images" : [ {
+    "height" : 816,
+    "url" : "https://i.scdn.co/image/eb266625dab075341e8c4378a177a27370f91903",
+    "width" : 1000
+  }],
+  "name" : "Band of Horses",
+  "popularity" : 59,
+  "type" : "artist",
+  "uri" : "spotify:artist:0OdUWJ0sBjDrqHygGUXeCF"
+}
+""".data(using: .utf8)!
+        let networkResponse: (Data?, HTTPURLResponse?, Error?) = (data, response, nil)
+        let artistID = "artist_1223"
+        let client = SpotifyClient(client: FakeClient(expected: networkResponse))
+        client.artist(artistID: artistID) {
+            switch $0 {
+            case .success(let artist):
+                XCTAssertEqual(expectedArtist, artist)
+            case .failure(let error):
+                XCTFail("Unexpected error: \(error)")
+            }
+        }
+    }
 }
