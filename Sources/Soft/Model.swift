@@ -31,6 +31,22 @@ public struct SimplifiedArtist: Decodable, Equatable {
     let uri: String
 }
 
+/// https://developer.spotify.com/web-api/object-model/#track-object-simplified
+public struct SimplifiedTrack: Decodable, Equatable {
+    let artists: [SimplifiedArtist]
+    let availableMarkets: [String]?
+    let discNumber: Int
+    let durationMs: UInt
+    let explicit: Bool
+    let externalUrls: [String:String]
+    let href: String
+    let id: String
+    let name: String
+    let previewUrl: String?
+    let trackNumber: UInt
+    let uri: String
+}
+
 /// https://developer.spotify.com/web-api/object-model/#track-object-full
 public struct Track: Decodable, Equatable {
     let album: SimplifiedAlbum
@@ -92,4 +108,24 @@ public struct Page<T:Decodable & Equatable>: Decodable, Equatable {
     let offset: UInt
     let previous: String?
     let total: UInt
+}
+
+/// https://developer.spotify.com/web-api/object-model/#album-object-full
+public struct Album: Decodable, Equatable {
+    let artists: [SimplifiedArtist]
+    let albumType: AlbumType
+    let availableMarkets: [String]
+    let copyrights: [[String:String]]
+    let externalIds: [String:String]
+    let externalUrls: [String:String]
+    let genres: [String]
+    let href: String
+    let id: String
+    let images: [Image]
+    let name: String
+    let popularity: UInt
+    let releaseDate: String
+    let releaseDatePrecision: String
+    let tracks: Page<SimplifiedTrack>
+    let uri: String
 }

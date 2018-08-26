@@ -216,4 +216,20 @@ public struct SpotifyClient {
             )
         }
     }
+
+    /// Get album info
+    /// See https://developer.spotify.com/web-api/get-album/
+    ///
+    /// - Parameters:
+    ///   - albumID: Spotify Album ID
+    ///   - completionHandler: Called on completion
+    public func album(albumID: String,
+                      completionHandler: @escaping (Result<Album>) -> Void) {
+        let url = apiURL + "albums/" + albumID
+        client.get(url: url, parameters: [:], headers: [:]) { body, response, error in
+            completionHandler(
+                self.decodeBody(body: body, response: response, error: error)
+            )
+        }
+    }
 }
