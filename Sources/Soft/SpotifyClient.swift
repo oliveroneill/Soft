@@ -84,6 +84,7 @@ public struct SpotifyClient {
     }
 
     /// Returns a single track given the track's ID
+    /// See https://developer.spotify.com/web-api/get-track/
     ///
     /// - Parameters:
     ///   - trackID: Spotify Track ID
@@ -98,6 +99,7 @@ public struct SpotifyClient {
     }
 
     /// Returns multiple tracks using the IDs specified
+    /// See https://developer.spotify.com/web-api/get-several-tracks/
     ///
     /// - Parameters:
     ///   - trackIDs: Spotify Track IDs
@@ -118,6 +120,7 @@ public struct SpotifyClient {
     }
 
     /// Get a single artist given the ID
+    /// See https://developer.spotify.com/web-api/get-artist/
     ///
     /// - Parameters:
     ///   - artistID: Spotify artist ID

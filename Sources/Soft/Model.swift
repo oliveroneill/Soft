@@ -9,6 +9,7 @@ public struct Image: Decodable, Equatable {
     let height: UInt?
 }
 
+/// https://developer.spotify.com/web-api/object-model/#album-object-simplified
 public struct SimplifiedAlbum: Decodable, Equatable {
     let artists: [SimplifiedArtist]
     let albumType: String
@@ -21,6 +22,7 @@ public struct SimplifiedAlbum: Decodable, Equatable {
     let uri: String
 }
 
+/// https://developer.spotify.com/web-api/object-model/#artist-object-simplified
 public struct SimplifiedArtist: Decodable, Equatable {
     let externalUrls: [String:String]
     let href: String
@@ -29,6 +31,7 @@ public struct SimplifiedArtist: Decodable, Equatable {
     let uri: String
 }
 
+/// https://developer.spotify.com/web-api/object-model/#track-object-full
 public struct Track: Decodable, Equatable {
     let album: SimplifiedAlbum
     let artists: [SimplifiedArtist]
@@ -50,6 +53,7 @@ public struct Tracks: Decodable, Equatable {
     let tracks: [Track]
 }
 
+/// https://developer.spotify.com/web-api/object-model/#artist-object-full
 public struct Artist: Decodable, Equatable {
     let externalUrls: [String:String]
     let genres: [String]
