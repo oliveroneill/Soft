@@ -188,7 +188,6 @@ final class SpotifyClientTests: XCTestCase {
         }
     }
 
-
     func testTracks() {
         let images = [
             Image(
@@ -507,6 +506,128 @@ final class SpotifyClientTests: XCTestCase {
             switch $0 {
             case .success(let page):
                 XCTAssertEqual(expectedPage, page)
+            case .failure(let error):
+                XCTFail("Unexpected error: \(error)")
+            }
+        }
+    }
+
+    func testArtistTopTracks() {
+        let images = [
+            Image(
+                url: "https://i.scdn.co/image/966ade7a8c43b72faa53822b74a899c675aaafee",
+                width: nil, height: nil
+            )
+        ]
+        let artists = [
+            SimplifiedArtist(
+                externalUrls: ["spotify": "https://open.spotify.com/artist/6sFIWsNpZYqfjUpaCgueju"],
+                href: "https://api.spotify.com/v1/artists/6sFIWsNpZYqfjUpaCgueju",
+                id: "6sFIWsNpZYqfjUpaCgueju",
+                name: "Carly Rae Jepsen",
+                uri: "spotify:artist:6sFIWsNpZYqfjUpaCgueju"
+            )
+        ]
+        let album = SimplifiedAlbum(
+            artists: artists, albumType: .single,
+            availableMarkets: ["AD"],
+            externalUrls: ["spotify": "https://open.spotify.com/album/0tGPJ0bkWOUmH7MEOR77qc"],
+            href: "https://api.spotify.com/v1/albums/0tGPJ0bkWOUmH7MEOR77qc",
+            id: "0tGPJ0bkWOUmH7MEOR77qc",
+            images: images, name: "Cut To The Feeling",
+            uri: "spotify:album:0tGPJ0bkWOUmH7MEOR77qc"
+        )
+        let track = Track(
+            album: album, artists: artists, availableMarkets: ["AD"],
+            discNumber: 1, durationMs: 207959,
+            externalIds: ["isrc": "USUM71703861"],
+            externalUrls: ["spotify": "https://open.spotify.com/track/11dFghVXANMlKmJXsNCbNl"],
+            href: "https://api.spotify.com/v1/tracks/11dFghVXANMlKmJXsNCbNl",
+            id: "11dFghVXANMlKmJXsNCbNl", name: "Cut To The Feeling",
+            popularity: 63,
+            previewUrl: "https://p.scdn.co/mp3-preview/3eb16018c2a700240e9dfb8817b6f2d041f15eb1?cid=774b29d4f13844c495f206cafdad9c86",
+            trackNumber: 1, uri: "spotify:track:11dFghVXANMlKmJXsNCbNl"
+        )
+        let expectedTracks = Tracks(tracks: [track])
+        let data = """
+{"tracks": [
+{
+  "album": {
+    "album_type": "single",
+    "artists": [
+      {
+        "external_urls": {
+          "spotify": "https://open.spotify.com/artist/6sFIWsNpZYqfjUpaCgueju"
+        },
+        "href": "https://api.spotify.com/v1/artists/6sFIWsNpZYqfjUpaCgueju",
+        "id": "6sFIWsNpZYqfjUpaCgueju",
+        "name": "Carly Rae Jepsen",
+        "type": "artist",
+        "uri": "spotify:artist:6sFIWsNpZYqfjUpaCgueju"
+      }
+    ],
+    "available_markets": [
+      "AD"
+    ],
+    "external_urls": {
+      "spotify": "https://open.spotify.com/album/0tGPJ0bkWOUmH7MEOR77qc"
+    },
+    "href": "https://api.spotify.com/v1/albums/0tGPJ0bkWOUmH7MEOR77qc",
+    "id": "0tGPJ0bkWOUmH7MEOR77qc",
+    "images": [
+      {
+        "url": "https://i.scdn.co/image/966ade7a8c43b72faa53822b74a899c675aaafee"
+      }
+    ],
+    "name": "Cut To The Feeling",
+    "release_date": "2017-05-26",
+    "release_date_precision": "day",
+    "type": "album",
+    "uri": "spotify:album:0tGPJ0bkWOUmH7MEOR77qc"
+  },
+  "artists": [
+    {
+      "external_urls": {
+        "spotify": "https://open.spotify.com/artist/6sFIWsNpZYqfjUpaCgueju"
+      },
+      "href": "https://api.spotify.com/v1/artists/6sFIWsNpZYqfjUpaCgueju",
+      "id": "6sFIWsNpZYqfjUpaCgueju",
+      "name": "Carly Rae Jepsen",
+      "type": "artist",
+      "uri": "spotify:artist:6sFIWsNpZYqfjUpaCgueju"
+    }
+  ],
+  "available_markets": [
+    "AD"
+  ],
+  "disc_number": 1,
+  "duration_ms": 207959,
+  "explicit": false,
+  "external_ids": {
+    "isrc": "USUM71703861"
+  },
+  "external_urls": {
+    "spotify": "https://open.spotify.com/track/11dFghVXANMlKmJXsNCbNl"
+  },
+  "href": "https://api.spotify.com/v1/tracks/11dFghVXANMlKmJXsNCbNl",
+  "id": "11dFghVXANMlKmJXsNCbNl",
+  "is_local": false,
+  "name": "Cut To The Feeling",
+  "popularity": 63,
+  "preview_url": "https://p.scdn.co/mp3-preview/3eb16018c2a700240e9dfb8817b6f2d041f15eb1?cid=774b29d4f13844c495f206cafdad9c86",
+  "track_number": 1,
+  "type": "track",
+  "uri": "spotify:track:11dFghVXANMlKmJXsNCbNl"
+}]
+}
+""".data(using: .utf8)!
+        let networkResponse: (Data?, HTTPURLResponse?, Error?) = (data, response, nil)
+        let artistID = "artist_1223"
+        let client = SpotifyClient(client: FakeClient(expected: networkResponse))
+        client.artistTopTracks(artistID: artistID, country: "AD") {
+            switch $0 {
+            case .success(let tracks):
+                XCTAssertEqual(expectedTracks, tracks)
             case .failure(let error):
                 XCTFail("Unexpected error: \(error)")
             }

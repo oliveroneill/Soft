@@ -181,4 +181,22 @@ public struct SpotifyClient {
             )
         }
     }
+
+    /// Get top 10 tracks from an artist
+    ///
+    /// - Parameters:
+    ///   - artistID: Spotify Artist ID
+    ///   - country: Limit the query by market. The format is ISO 3166-1 alpha-2 country
+    ///     code
+    ///   - completionHandler: Called on completion
+    public func artistTopTracks(artistID: String, country: String,
+                                completionHandler: @escaping (Result<Tracks>) -> Void) {
+        let url = apiURL + "artists/" + artistID + "/top-tracks"
+        let parameters = ["country": country]
+        client.get(url: url, parameters: parameters, headers: [:]) { body, response, error in
+            completionHandler(
+                self.decodeBody(body: body, response: response, error: error)
+            )
+        }
+    }
 }
