@@ -133,4 +133,20 @@ public struct SpotifyClient {
             )
         }
     }
+
+    /// Returns multiple artists using the IDs specified
+    /// See https://developer.spotify.com/web-api/get-several-artists/
+    ///
+    /// - Parameters:
+    ///   - artistIDs: List of Spotify artist IDs
+    ///   - completionHandler: Called on completion
+    public func artists(artistIDs: [String], completionHandler: @escaping (Result<Artists>) -> Void) {
+        let url = apiURL + "artists/"
+        let parameters = ["ids": artistIDs.joined(separator: ",")]
+        client.get(url: url, parameters: parameters, headers: [:]) { body, response, error in
+            completionHandler(
+                self.decodeBody(body: body, response: response, error: error)
+            )
+        }
+    }
 }

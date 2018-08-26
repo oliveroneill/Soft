@@ -71,3 +71,7 @@ public struct Artist: Decodable, Equatable {
     let popularity: UInt
     let uri: String
 }
+
+public struct Artists: Decodable, Equatable {
+    let artists: [Artist]
+}

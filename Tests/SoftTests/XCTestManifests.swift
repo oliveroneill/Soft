@@ -26,6 +26,8 @@ extension SpotifyClientTests {
         ("testArtist", testArtist),
         ("testTrack", testTrack),
         ("testTracks", testTracks),
+        ("testArtist", testArtist),
+        ("testArtists", testArtists),
     ]
 }
 
