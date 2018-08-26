@@ -183,6 +183,7 @@ public struct SpotifyClient {
     }
 
     /// Get top 10 tracks from an artist
+    /// See https://developer.spotify.com/web-api/get-artists-top-tracks/
     ///
     /// - Parameters:
     ///   - artistID: Spotify Artist ID
@@ -201,6 +202,7 @@ public struct SpotifyClient {
     }
 
     /// Get artists related to specified artist
+    /// See https://developer.spotify.com/web-api/get-related-artists/
     ///
     /// - Parameters:
     ///   - artistID: Spotify Artist ID
@@ -214,5 +216,4 @@ public struct SpotifyClient {
             )
         }
     }
-
 }
