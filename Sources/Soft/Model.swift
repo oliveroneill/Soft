@@ -12,7 +12,7 @@ public struct Image: Decodable, Equatable {
 /// https://developer.spotify.com/web-api/object-model/#album-object-simplified
 public struct SimplifiedAlbum: Decodable, Equatable {
     let artists: [SimplifiedArtist]
-    let albumType: String
+    let albumType: AlbumType
     let availableMarkets: [String]
     let externalUrls: [String:String]
     let href: String
@@ -74,4 +74,22 @@ public struct Artist: Decodable, Equatable {
 
 public struct Artists: Decodable, Equatable {
     let artists: [Artist]
+}
+
+public enum AlbumType: String, Decodable {
+    case album = "album"
+    case single = "single"
+    case appearsOn = "appears_on"
+    case compilation = "compilation"
+}
+
+/// https://developer.spotify.com/web-api/object-model/#paging-object
+public struct Page<T:Decodable & Equatable>: Decodable, Equatable {
+    let href: String
+    let items: [T]
+    let limit: UInt
+    let next: String?
+    let offset: UInt
+    let previous: String?
+    let total: UInt
 }

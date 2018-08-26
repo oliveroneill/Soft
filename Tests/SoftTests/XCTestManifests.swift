@@ -24,10 +24,10 @@ extension SpotifyClientCredentialsTests {
 extension SpotifyClientTests {
     static let __allTests = [
         ("testArtist", testArtist),
+        ("testArtistAlbums", testArtistAlbums),
+        ("testArtists", testArtists),
         ("testTrack", testTrack),
         ("testTracks", testTracks),
-        ("testArtist", testArtist),
-        ("testArtists", testArtists),
     ]
 }
 

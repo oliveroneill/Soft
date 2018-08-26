@@ -86,7 +86,7 @@ final class SpotifyClientTests: XCTestCase {
             )
         ]
         let album = SimplifiedAlbum(
-            artists: artists, albumType: "single",
+            artists: artists, albumType: .single,
             availableMarkets: ["AD"],
             externalUrls: ["spotify": "https://open.spotify.com/album/0tGPJ0bkWOUmH7MEOR77qc"],
             href: "https://api.spotify.com/v1/albums/0tGPJ0bkWOUmH7MEOR77qc",
@@ -206,7 +206,7 @@ final class SpotifyClientTests: XCTestCase {
             )
         ]
         let album = SimplifiedAlbum(
-            artists: artists, albumType: "single",
+            artists: artists, albumType: .single,
             availableMarkets: ["AD"],
             externalUrls: ["spotify": "https://open.spotify.com/album/0tGPJ0bkWOUmH7MEOR77qc"],
             href: "https://api.spotify.com/v1/albums/0tGPJ0bkWOUmH7MEOR77qc",
@@ -422,6 +422,91 @@ final class SpotifyClientTests: XCTestCase {
             switch $0 {
             case .success(let artists):
                 XCTAssertEqual(expectedArtists, artists)
+            case .failure(let error):
+                XCTFail("Unexpected error: \(error)")
+            }
+        }
+    }
+
+    func testArtistAlbums() {
+        let artist = SimplifiedArtist(
+            externalUrls: ["spotify": "https://open.spotify.com/artist/0LyfQWJT6nXafLPZqxe9Of"],
+            href: "https://api.spotify.com/v1/artists/0LyfQWJT6nXafLPZqxe9Of",
+            id: "0LyfQWJT6nXafLPZqxe9Of",
+            name: "Various Artists",
+            uri: "spotify:artist:0LyfQWJT6nXafLPZqxe9Of"
+        )
+        let album = SimplifiedAlbum(
+            artists: [artist],
+            albumType: .album,
+            availableMarkets: ["AD"],
+            externalUrls: ["spotify": "https://open.spotify.com/album/43977e0YlJeMXG77uCCSMX"],
+            href: "https://api.spotify.com/v1/albums/43977e0YlJeMXG77uCCSMX",
+            id: "43977e0YlJeMXG77uCCSMX",
+            images: [Image(url: "https://i.scdn.co/image/0da79956d0440a55b20ea4e8e38877bce43275cd", width: nil, height: nil)],
+            name: "Shut Up Lets Dance (Vol. II)",
+            uri: "spotify:album:43977e0YlJeMXG77uCCSMX"
+        )
+        let expectedPage = Page<SimplifiedAlbum>(
+            href: "https://api.spotify.com/v1/artists/1vCWHaC5f2uS3yhpwWbIA6/albums?offset=0&limit=2&include_groups=appears_on&market=ES",
+            items: [album],
+            limit: 2,
+            next: "https://api.spotify.com/v1/artists/1vCWHaC5f2uS3yhpwWbIA6/albums?offset=2&limit=2&include_groups=appears_on&market=ES",
+            offset: 0,
+            previous: nil,
+            total: 308
+        )
+        let data = """
+{
+  "href": "https://api.spotify.com/v1/artists/1vCWHaC5f2uS3yhpwWbIA6/albums?offset=0&limit=2&include_groups=appears_on&market=ES",
+  "items": [
+    {
+      "album_group": "appears_on",
+      "album_type": "album",
+      "artists": [
+        {
+          "external_urls": {
+            "spotify": "https://open.spotify.com/artist/0LyfQWJT6nXafLPZqxe9Of"
+          },
+          "href": "https://api.spotify.com/v1/artists/0LyfQWJT6nXafLPZqxe9Of",
+          "id": "0LyfQWJT6nXafLPZqxe9Of",
+          "name": "Various Artists",
+          "type": "artist",
+          "uri": "spotify:artist:0LyfQWJT6nXafLPZqxe9Of"
+        }
+      ],
+      "available_markets": ["AD"],
+      "external_urls": {
+        "spotify": "https://open.spotify.com/album/43977e0YlJeMXG77uCCSMX"
+      },
+      "href": "https://api.spotify.com/v1/albums/43977e0YlJeMXG77uCCSMX",
+      "id": "43977e0YlJeMXG77uCCSMX",
+      "images": [
+        {
+          "url": "https://i.scdn.co/image/0da79956d0440a55b20ea4e8e38877bce43275cd"
+        }
+      ],
+      "name": "Shut Up Lets Dance (Vol. II)",
+      "release_date": "2018-02-09",
+      "release_date_precision": "day",
+      "type": "album",
+      "uri": "spotify:album:43977e0YlJeMXG77uCCSMX"
+    }
+  ],
+  "limit": 2,
+  "next": "https://api.spotify.com/v1/artists/1vCWHaC5f2uS3yhpwWbIA6/albums?offset=2&limit=2&include_groups=appears_on&market=ES",
+  "offset": 0,
+  "previous": null,
+  "total": 308
+}
+""".data(using: .utf8)!
+        let networkResponse: (Data?, HTTPURLResponse?, Error?) = (data, response, nil)
+        let artistID = "artist_1223"
+        let client = SpotifyClient(client: FakeClient(expected: networkResponse))
+        client.artistAlbums(artistID: artistID) {
+            switch $0 {
+            case .success(let page):
+                XCTAssertEqual(expectedPage, page)
             case .failure(let error):
                 XCTFail("Unexpected error: \(error)")
             }

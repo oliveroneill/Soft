@@ -109,9 +109,7 @@ public struct SpotifyClient {
     public func tracks(trackIDs: [String], market: String? = nil, completionHandler: @escaping (Result<Tracks>) -> Void) {
         let url = apiURL + "tracks/"
         var parameters = ["ids": trackIDs.joined(separator: ",")]
-        if let market = market {
-            parameters["market"] = market
-        }
+        parameters["market"] = market
         client.get(url: url, parameters: parameters, headers: [:]) { body, response, error in
             completionHandler(
                 self.decodeBody(body: body, response: response, error: error)
@@ -143,6 +141,40 @@ public struct SpotifyClient {
     public func artists(artistIDs: [String], completionHandler: @escaping (Result<Artists>) -> Void) {
         let url = apiURL + "artists/"
         let parameters = ["ids": artistIDs.joined(separator: ",")]
+        client.get(url: url, parameters: parameters, headers: [:]) { body, response, error in
+            completionHandler(
+                self.decodeBody(body: body, response: response, error: error)
+            )
+        }
+    }
+
+    /// Get Spotify catalog information about an artist's albums
+    /// See https://developer.spotify.com/web-api/get-artists-albums/
+    ///
+    /// - Parameters:
+    ///   - artistID: Spotify artist ID
+    ///   - albumTypes: Optional 'album', 'single', 'appears_on', 'compilation'
+    ///   - country: Optional market. The format is ISO 3166-1 alpha-2 country
+    ///     code
+    ///   - limit: Optional the number of albums to return
+    ///   - offset: Optional the index of the first album to return
+    ///   - completionHandler: Called on completion
+    public func artistAlbums(artistID: String, albumTypes: [AlbumType]? = nil,
+                             country: String? = nil, limit: UInt? = nil,
+                             offset: UInt? = nil,
+                             completionHandler: @escaping (Result<Page<SimplifiedAlbum>>) -> Void) {
+        let url = apiURL + "artists/" + artistID + "/albums"
+        var parameters: [String:String] = [:]
+        if let limit = limit {
+            parameters["limit"] = "\(limit)"
+        }
+        if let albumTypes = albumTypes {
+            parameters["include_groups"] = albumTypes.map{ $0.rawValue }.joined(separator: ",")
+        }
+        if let offset = offset {
+            parameters["offset"] = "\(offset)"
+        }
+        parameters["market"] = country
         client.get(url: url, parameters: parameters, headers: [:]) { body, response, error in
             completionHandler(
                 self.decodeBody(body: body, response: response, error: error)
