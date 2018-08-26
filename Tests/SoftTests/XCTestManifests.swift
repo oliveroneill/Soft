@@ -24,6 +24,7 @@ extension SpotifyClientCredentialsTests {
 extension SpotifyClientTests {
     static let __allTests = [
         ("testTrack", testTrack),
+        ("testTracks", testTracks),
     ]
 }
 

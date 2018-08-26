@@ -45,3 +45,7 @@ public struct Track: Decodable, Equatable {
     let trackNumber: UInt
     let uri: String
 }
+
+public struct Tracks: Decodable, Equatable {
+    let tracks: [Track]
+}

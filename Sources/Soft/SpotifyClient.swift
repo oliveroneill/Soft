@@ -96,4 +96,24 @@ public struct SpotifyClient {
             )
         }
     }
+
+    /// Returns multiple tracks using the IDs specified
+    ///
+    /// - Parameters:
+    ///   - trackIDs: Spotify Track IDs
+    ///   - market: Optionally specify the market. The format is ISO 3166-1
+    ///   alpha-2 country code
+    ///   - completionHandler: Called on completion
+    public func tracks(trackIDs: [String], market: String? = nil, completionHandler: @escaping (Result<Tracks>) -> Void) {
+        let url = apiURL + "tracks/"
+        var parameters = ["ids": trackIDs.joined(separator: ",")]
+        if let market = market {
+            parameters["market"] = market
+        }
+        client.get(url: url, parameters: parameters, headers: [:]) { body, response, error in
+            completionHandler(
+                self.decodeBody(body: body, response: response, error: error)
+            )
+        }
+    }
 }
