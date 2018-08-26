@@ -199,4 +199,20 @@ public struct SpotifyClient {
             )
         }
     }
+
+    /// Get artists related to specified artist
+    ///
+    /// - Parameters:
+    ///   - artistID: Spotify Artist ID
+    ///   - completionHandler: Called on completion
+    public func relatedArtists(artistID: String,
+                                completionHandler: @escaping (Result<Artists>) -> Void) {
+        let url = apiURL + "artists/" + artistID + "/related-artists"
+        client.get(url: url, parameters: [:], headers: [:]) { body, response, error in
+            completionHandler(
+                self.decodeBody(body: body, response: response, error: error)
+            )
+        }
+    }
+
 }
