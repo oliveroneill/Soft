@@ -26,7 +26,7 @@ class SpotifyAuthorizedHTTPClient: HTTPClient {
         clientCredentials.fetchAccessToken { result in
             switch result {
             case .success(let token):
-                let header = ["Authorization": "Bearer: \(token.accessToken)"]
+                let header = ["Authorization": "Bearer \(token.accessToken)"]
                 completionHandler(.success(header))
             case .failure(let error):
                 completionHandler(.failure(error))

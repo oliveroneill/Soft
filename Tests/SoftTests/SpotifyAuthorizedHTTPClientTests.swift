@@ -135,7 +135,7 @@ final class SpotifyAuthorizedHTTPClientTests: XCTestCase {
             )
             let expectedHeaders = [
                 "a":"header", "x":"y",
-                "Authorization": "Bearer: \(accessToken)"
+                "Authorization": "Bearer \(accessToken)"
             ]
             client.get(url: urlString, parameters: parameters, headers: headers) {
                 (data, response, error) in
@@ -171,7 +171,7 @@ final class SpotifyAuthorizedHTTPClientTests: XCTestCase {
             )
             let expectedHeaders = [
                 "a":"header", "x":"y",
-                "Authorization": "Bearer: \(accessToken)"
+                "Authorization": "Bearer \(accessToken)"
             ]
             client.post(url: urlString, payload: payload, headers: headers) {
                 (data, response, error) in
@@ -207,7 +207,7 @@ final class SpotifyAuthorizedHTTPClientTests: XCTestCase {
             )
             let expectedHeaders = [
                 "a":"header", "x":"y",
-                "Authorization": "Bearer: \(accessToken)"
+                "Authorization": "Bearer \(accessToken)"
             ]
             client.put(url: urlString, payload: payload, headers: headers) {
                 (data, response, error) in
@@ -243,7 +243,7 @@ final class SpotifyAuthorizedHTTPClientTests: XCTestCase {
             )
             let expectedHeaders = [
                 "a":"header", "x":"y",
-                "Authorization": "Bearer: \(accessToken)"
+                "Authorization": "Bearer \(accessToken)"
             ]
             client.delete(url: urlString, payload: payload, headers: headers) {
                 (data, response, error) in
