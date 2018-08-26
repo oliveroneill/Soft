@@ -7,8 +7,9 @@ enum InvalidCredentialsError: Error {
     case emptyInput
 }
 
-/// Holds client credentials. Used for gaining access tokens
-public struct SpotifyClientCredentials {
+/// Holds client credentials. Used for gaining access tokens. This should be
+/// used for the "Client Credentials Flow"
+public struct SpotifyClientCredentials: ClientCredentials {
     let clientID: String
     let clientSecret: String
 
@@ -48,7 +49,7 @@ public struct SpotifyClientCredentials {
     /// Request access token from Spotify API
     ///
     /// - Parameter completionHandler: Called upon completion
-    func fetchAccessToken(completionHandler: @escaping (Result<TokenInfo>) -> Void) {
+    public func fetchAccessToken(completionHandler: @escaping (Result<TokenInfo>) -> Void) {
         fetcher.fetchAccessToken(
             clientID: clientID,
             clientSecret: clientSecret,

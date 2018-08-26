@@ -103,166 +103,135 @@ final class SpotifyAuthorizedHTTPClientTests: XCTestCase {
         }
     }
 
-    /// Fake token fetcher for mocking network interaction
-    class FakeTokenFetcher: AuthorizationTokenFetcher {
+    class FakeClientCredentials: ClientCredentials {
         /// Keeps track of calls to fetchAccessToken
         private let result: Result<TokenInfo>
 
-        /// Create a FakeTokenFetcher
+        /// Create a FakeClientCredentials
         ///
         /// - Parameter result: The result to be returned from fetchAccessToken
         init(result: Result<TokenInfo>) {
             self.result = result
         }
 
-        func fetchAccessToken(clientID: String, clientSecret: String,
-                              parameters: [String : String],
-                              completionHandler: @escaping (Result<TokenInfo>) -> Void) {
+        func fetchAccessToken(completionHandler: @escaping (Result<TokenInfo>) -> Void) {
             completionHandler(result)
         }
     }
     
     func testGet() {
-        do {
-            let clientCredentials = try SpotifyClientCredentials(
-                clientID: "client-id", clientSecret: "client-secret",
-                fetcher: FakeTokenFetcher(result: .success(token))
-            )
-            let fakeClient = FakeClient(expected: networkResponse)
-            let client = SpotifyAuthorizedHTTPClient(
-                client: fakeClient,
-                clientCredentials: clientCredentials
-            )
-            let expectedHeaders = [
-                "a":"header", "x":"y",
-                "Authorization": "Bearer \(accessToken)"
-            ]
-            client.get(url: urlString, parameters: parameters, headers: headers) {
-                (data, response, error) in
-                // Verify HTTP client is called correctly
-                XCTAssertEqual(self.urlString, fakeClient.getCalls.first?.url)
-                XCTAssertEqual(self.parameters, fakeClient.getCalls.first?.parameters)
-                XCTAssertEqual(expectedHeaders, fakeClient.getCalls.first?.headers)
-                // Verify the response is as expected
-                XCTAssertEqual(self.networkResponse.0, data)
-                XCTAssertEqual(self.networkResponse.1, response)
-                XCTAssertEqual(self.networkResponse.2 as? TestError, error as? TestError)
-                // Verify other client requests are not made
-                XCTAssertEqual(0, fakeClient.numCallsAuthenticationRequest)
-                XCTAssertEqual(0, fakeClient.postCalls.count)
-                XCTAssertEqual(0, fakeClient.putCalls.count)
-                XCTAssertEqual(0, fakeClient.deleteCalls.count)
-            }
-        } catch {
-            XCTFail("Unexpected error: \(error)")
+        let clientCredentials = FakeClientCredentials(result: .success(token))
+        let fakeClient = FakeClient(expected: networkResponse)
+        let client = SpotifyAuthorizedHTTPClient(
+            client: fakeClient,
+            clientCredentials: clientCredentials
+        )
+        let expectedHeaders = [
+            "a":"header", "x":"y",
+            "Authorization": "Bearer \(accessToken)"
+        ]
+        client.get(url: urlString, parameters: parameters, headers: headers) {
+            (data, response, error) in
+            // Verify HTTP client is called correctly
+            XCTAssertEqual(self.urlString, fakeClient.getCalls.first?.url)
+            XCTAssertEqual(self.parameters, fakeClient.getCalls.first?.parameters)
+            XCTAssertEqual(expectedHeaders, fakeClient.getCalls.first?.headers)
+            // Verify the response is as expected
+            XCTAssertEqual(self.networkResponse.0, data)
+            XCTAssertEqual(self.networkResponse.1, response)
+            XCTAssertEqual(self.networkResponse.2 as? TestError, error as? TestError)
+            // Verify other client requests are not made
+            XCTAssertEqual(0, fakeClient.numCallsAuthenticationRequest)
+            XCTAssertEqual(0, fakeClient.postCalls.count)
+            XCTAssertEqual(0, fakeClient.putCalls.count)
+            XCTAssertEqual(0, fakeClient.deleteCalls.count)
         }
     }
 
     func testPost() {
-        do {
-            let clientCredentials = try SpotifyClientCredentials(
-                clientID: "client-id", clientSecret: "client-secret",
-                fetcher: FakeTokenFetcher(result: .success(token))
-            )
-            let fakeClient = FakeClient(expected: networkResponse)
-            let client = SpotifyAuthorizedHTTPClient(
-                client: fakeClient,
-                clientCredentials: clientCredentials
-            )
-            let expectedHeaders = [
-                "a":"header", "x":"y",
-                "Authorization": "Bearer \(accessToken)"
-            ]
-            client.post(url: urlString, payload: payload, headers: headers) {
-                (data, response, error) in
-                // Verify HTTP client is called correctly
-                XCTAssertEqual(self.urlString, fakeClient.postCalls.first?.url)
-                XCTAssertEqual(self.payload, fakeClient.postCalls.first?.payload)
-                XCTAssertEqual(expectedHeaders, fakeClient.postCalls.first?.headers)
-                // Verify the response is as expected
-                XCTAssertEqual(self.networkResponse.0, data)
-                XCTAssertEqual(self.networkResponse.1, response)
-                XCTAssertEqual(self.networkResponse.2 as? TestError, error as? TestError)
-                // Verify other client requests are not made
-                XCTAssertEqual(0, fakeClient.numCallsAuthenticationRequest)
-                XCTAssertEqual(0, fakeClient.getCalls.count)
-                XCTAssertEqual(0, fakeClient.putCalls.count)
-                XCTAssertEqual(0, fakeClient.deleteCalls.count)
-            }
-        } catch {
-            XCTFail("Unexpected error: \(error)")
+        let clientCredentials = FakeClientCredentials(result: .success(token))
+        let fakeClient = FakeClient(expected: networkResponse)
+        let client = SpotifyAuthorizedHTTPClient(
+            client: fakeClient,
+            clientCredentials: clientCredentials
+        )
+        let expectedHeaders = [
+            "a":"header", "x":"y",
+            "Authorization": "Bearer \(accessToken)"
+        ]
+        client.post(url: urlString, payload: payload, headers: headers) {
+            (data, response, error) in
+            // Verify HTTP client is called correctly
+            XCTAssertEqual(self.urlString, fakeClient.postCalls.first?.url)
+            XCTAssertEqual(self.payload, fakeClient.postCalls.first?.payload)
+            XCTAssertEqual(expectedHeaders, fakeClient.postCalls.first?.headers)
+            // Verify the response is as expected
+            XCTAssertEqual(self.networkResponse.0, data)
+            XCTAssertEqual(self.networkResponse.1, response)
+            XCTAssertEqual(self.networkResponse.2 as? TestError, error as? TestError)
+            // Verify other client requests are not made
+            XCTAssertEqual(0, fakeClient.numCallsAuthenticationRequest)
+            XCTAssertEqual(0, fakeClient.getCalls.count)
+            XCTAssertEqual(0, fakeClient.putCalls.count)
+            XCTAssertEqual(0, fakeClient.deleteCalls.count)
         }
     }
 
     func testPut() {
-        do {
-            let clientCredentials = try SpotifyClientCredentials(
-                clientID: "client-id", clientSecret: "client-secret",
-                fetcher: FakeTokenFetcher(result: .success(token))
-            )
-            let fakeClient = FakeClient(expected: networkResponse)
-            let client = SpotifyAuthorizedHTTPClient(
-                client: fakeClient,
-                clientCredentials: clientCredentials
-            )
-            let expectedHeaders = [
-                "a":"header", "x":"y",
-                "Authorization": "Bearer \(accessToken)"
-            ]
-            client.put(url: urlString, payload: payload, headers: headers) {
-                (data, response, error) in
-                // Verify HTTP client is called correctly
-                XCTAssertEqual(self.urlString, fakeClient.putCalls.first?.url)
-                XCTAssertEqual(self.payload, fakeClient.putCalls.first?.payload)
-                XCTAssertEqual(expectedHeaders, fakeClient.putCalls.first?.headers)
-                // Verify the response is as expected
-                XCTAssertEqual(self.networkResponse.0, data)
-                XCTAssertEqual(self.networkResponse.1, response)
-                XCTAssertEqual(self.networkResponse.2 as? TestError, error as? TestError)
-                // Verify other client requests are not made
-                XCTAssertEqual(0, fakeClient.numCallsAuthenticationRequest)
-                XCTAssertEqual(0, fakeClient.getCalls.count)
-                XCTAssertEqual(0, fakeClient.postCalls.count)
-                XCTAssertEqual(0, fakeClient.deleteCalls.count)
-            }
-        } catch {
-            XCTFail("Unexpected error: \(error)")
+        let clientCredentials = FakeClientCredentials(result: .success(token))
+        let fakeClient = FakeClient(expected: networkResponse)
+        let client = SpotifyAuthorizedHTTPClient(
+            client: fakeClient,
+            clientCredentials: clientCredentials
+        )
+        let expectedHeaders = [
+            "a":"header", "x":"y",
+            "Authorization": "Bearer \(accessToken)"
+        ]
+        client.put(url: urlString, payload: payload, headers: headers) {
+            (data, response, error) in
+            // Verify HTTP client is called correctly
+            XCTAssertEqual(self.urlString, fakeClient.putCalls.first?.url)
+            XCTAssertEqual(self.payload, fakeClient.putCalls.first?.payload)
+            XCTAssertEqual(expectedHeaders, fakeClient.putCalls.first?.headers)
+            // Verify the response is as expected
+            XCTAssertEqual(self.networkResponse.0, data)
+            XCTAssertEqual(self.networkResponse.1, response)
+            XCTAssertEqual(self.networkResponse.2 as? TestError, error as? TestError)
+            // Verify other client requests are not made
+            XCTAssertEqual(0, fakeClient.numCallsAuthenticationRequest)
+            XCTAssertEqual(0, fakeClient.getCalls.count)
+            XCTAssertEqual(0, fakeClient.postCalls.count)
+            XCTAssertEqual(0, fakeClient.deleteCalls.count)
         }
     }
 
     func testDelete() {
-        do {
-            let clientCredentials = try SpotifyClientCredentials(
-                clientID: "client-id", clientSecret: "client-secret",
-                fetcher: FakeTokenFetcher(result: .success(token))
-            )
-            let fakeClient = FakeClient(expected: networkResponse)
-            let client = SpotifyAuthorizedHTTPClient(
-                client: fakeClient,
-                clientCredentials: clientCredentials
-            )
-            let expectedHeaders = [
-                "a":"header", "x":"y",
-                "Authorization": "Bearer \(accessToken)"
-            ]
-            client.delete(url: urlString, payload: payload, headers: headers) {
-                (data, response, error) in
-                // Verify HTTP client is called correctly
-                XCTAssertEqual(self.urlString, fakeClient.deleteCalls.first?.url)
-                XCTAssertEqual(self.payload, fakeClient.deleteCalls.first?.payload)
-                XCTAssertEqual(expectedHeaders, fakeClient.deleteCalls.first?.headers)
-                // Verify the response is as expected
-                XCTAssertEqual(self.networkResponse.0, data)
-                XCTAssertEqual(self.networkResponse.1, response)
-                XCTAssertEqual(self.networkResponse.2 as? TestError, error as? TestError)
-                // Verify other client requests are not made
-                XCTAssertEqual(0, fakeClient.numCallsAuthenticationRequest)
-                XCTAssertEqual(0, fakeClient.getCalls.count)
-                XCTAssertEqual(0, fakeClient.postCalls.count)
-                XCTAssertEqual(0, fakeClient.putCalls.count)
-            }
-        } catch {
-            XCTFail("Unexpected error: \(error)")
+        let clientCredentials = FakeClientCredentials(result: .success(token))
+        let fakeClient = FakeClient(expected: networkResponse)
+        let client = SpotifyAuthorizedHTTPClient(
+            client: fakeClient,
+            clientCredentials: clientCredentials
+        )
+        let expectedHeaders = [
+            "a":"header", "x":"y",
+            "Authorization": "Bearer \(accessToken)"
+        ]
+        client.delete(url: urlString, payload: payload, headers: headers) {
+            (data, response, error) in
+            // Verify HTTP client is called correctly
+            XCTAssertEqual(self.urlString, fakeClient.deleteCalls.first?.url)
+            XCTAssertEqual(self.payload, fakeClient.deleteCalls.first?.payload)
+            XCTAssertEqual(expectedHeaders, fakeClient.deleteCalls.first?.headers)
+            // Verify the response is as expected
+            XCTAssertEqual(self.networkResponse.0, data)
+            XCTAssertEqual(self.networkResponse.1, response)
+            XCTAssertEqual(self.networkResponse.2 as? TestError, error as? TestError)
+            // Verify other client requests are not made
+            XCTAssertEqual(0, fakeClient.numCallsAuthenticationRequest)
+            XCTAssertEqual(0, fakeClient.getCalls.count)
+            XCTAssertEqual(0, fakeClient.postCalls.count)
+            XCTAssertEqual(0, fakeClient.putCalls.count)
         }
     }
 }

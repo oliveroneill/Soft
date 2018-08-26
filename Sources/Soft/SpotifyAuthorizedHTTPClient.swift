@@ -3,7 +3,7 @@ import Foundation
 /// A client that adds Spotify Authorization headers to each request
 class SpotifyAuthorizedHTTPClient: HTTPClient {
     private let client: HTTPClient
-    private let clientCredentials: SpotifyClientCredentials
+    private let clientCredentials: ClientCredentials
 
     /// Create a SpotifyAuthorizedHTTPClient instance which will fetch
     /// credentials using the input clientCredentials and add them as
@@ -13,7 +13,7 @@ class SpotifyAuthorizedHTTPClient: HTTPClient {
     ///   - client: This will be used for requests
     ///   - clientCredentials: Credentials will be added as authorization
     ///     headers to each request
-    init(client: HTTPClient, clientCredentials: SpotifyClientCredentials) {
+    init(client: HTTPClient, clientCredentials: ClientCredentials) {
         self.client = client
         self.clientCredentials = clientCredentials
     }

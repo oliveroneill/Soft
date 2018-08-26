@@ -17,11 +17,20 @@ public struct SpotifyClient {
     private let apiURL = "https://api.spotify.com/v1/"
     private let client: HTTPClient
 
+    /// Create a SpotifyClient instance
+    ///
+    /// - Parameter tokenInfo: Token retrieved via SpotifyOAuth
+    public init(tokenInfo: TokenInfo) {
+        self.init(
+            clientCredentials: TokenInfoCredentials(tokenInfo: tokenInfo)
+        )
+    }
+
     /// Create a SpotifyClient instance that will automatically add
     /// authorization headers using the specified credentials.
     ///
     /// - Parameter clientCredentials: Used for retrieving credentials
-    public init(clientCredentials: SpotifyClientCredentials) {
+    public init(clientCredentials: ClientCredentials) {
         self.init(
             client: SpotifyAuthorizedHTTPClient(
                 client: SwiftyRequestClient(),
