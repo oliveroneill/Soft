@@ -321,6 +321,7 @@ final class SpotifyClientTests: XCTestCase {
         ]
         let expectedArtist = Artist(
             externalUrls: ["spotify" : "https://open.spotify.com/artist/0OdUWJ0sBjDrqHygGUXeCF"],
+            followers: Followers(href: nil, total: 306565),
             genres: ["indie folk", "indie pop"],
             href: "https://api.spotify.com/v1/artists/0OdUWJ0sBjDrqHygGUXeCF",
             id: "0OdUWJ0sBjDrqHygGUXeCF",
