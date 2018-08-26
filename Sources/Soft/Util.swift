@@ -20,8 +20,16 @@ extension String {
         )
         var string = ""
         for _ in 0..<count {
-            string.append(characters[Int(arc4random()) % characters.count])
+            string.append(characters[randomNumber(max: characters.count)])
         }
         return string
     }
+}
+
+private func randomNumber(max: Int) -> Int {
+    #if os(Linux)
+    return Int(random() % max)
+    #else
+    return Int(arc4random_uniform(UInt32(max)))
+    #endif
 }
