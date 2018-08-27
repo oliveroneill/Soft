@@ -232,4 +232,21 @@ public struct SpotifyClient {
             )
         }
     }
+
+    /// Get album info
+    /// See https://developer.spotify.com/web-api/get-several-albums/
+    ///
+    /// - Parameters:
+    ///   - albumIDs: Spotify Album IDs
+    ///   - completionHandler: Called on completion
+    public func albums(albumIDs: [String],
+                      completionHandler: @escaping (Result<Albums>) -> Void) {
+        let url = apiURL + "albums/?ids=" + albumIDs.joined(separator: ",")
+        client.get(url: url, parameters: [:], headers: [:]) { body, response, error in
+            completionHandler(
+                self.decodeBody(body: body, response: response, error: error)
+            )
+        }
+    }
+
 }

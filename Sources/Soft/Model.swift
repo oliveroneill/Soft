@@ -129,3 +129,7 @@ public struct Album: Decodable, Equatable {
     let tracks: Page<SimplifiedTrack>
     let uri: String
 }
+
+public struct Albums: Decodable, Equatable {
+    let albums: [Album]
+}
