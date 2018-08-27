@@ -1019,4 +1019,38 @@ final class SpotifyClientTests: XCTestCase {
             }
         }
     }
+
+    func testUser() {
+        let user = PublicUser(
+            displayName: "Holger Ihrig",
+            externalUrls: ["spotify": "https://open.spotify.com/user/holgar_the_red"],
+            followers: nil,
+            href: "https://api.spotify.com/v1/users/holgar_the_red",
+            id: "holgar_the_red",
+            images: nil,
+            uri: "spotify:user:holgar_the_red"
+        )
+        let data = """
+{
+  "display_name": "Holger Ihrig",
+  "external_urls": {
+    "spotify": "https://open.spotify.com/user/holgar_the_red"
+  },
+  "href": "https://api.spotify.com/v1/users/holgar_the_red",
+  "id": "holgar_the_red",
+  "type": "user",
+  "uri": "spotify:user:holgar_the_red"
+}
+""".data(using: .utf8)!
+        let networkResponse: (Data?, HTTPURLResponse?, Error?) = (data, response, nil)
+        let client = SpotifyClient(client: FakeClient(expected: networkResponse))
+        client.user(userID: "example-user123") {
+            switch $0 {
+            case .success(let result):
+                XCTAssertEqual(user, result)
+            case .failure(let error):
+                XCTFail("Unexpected error: \(error)")
+            }
+        }
+    }
 }

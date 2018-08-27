@@ -395,4 +395,20 @@ public struct SpotifyClient {
             )
         }
     }
+
+    /// Get basic profile information about a Spotify User
+    /// See https://developer.spotify.com/web-api/get-users-profile/
+    ///
+    /// - Parameters:
+    ///   - albumID: Spotify Album ID
+    ///   - completionHandler: Called on completion
+    public func user(userID: String,
+                     completionHandler: @escaping (Result<PublicUser>) -> Void) {
+        let url = apiURL + "users/" + userID
+        client.get(url: url, parameters: [:], headers: [:]) { body, response, error in
+            completionHandler(
+                self.decodeBody(body: body, response: response, error: error)
+            )
+        }
+    }
 }
