@@ -249,4 +249,65 @@ public struct SpotifyClient {
         }
     }
 
+    /// Specifies the search type.
+    /// See "type" field in
+    /// https://developer.spotify.com/documentation/web-api/reference/search/search/
+    private enum SearchType: String {
+        case album = "album"
+        case artist = "artist"
+        case track = "track"
+        case playlist = "playlist"
+    }
+
+    /// Search for an Item
+    /// See https://developer.spotify.com/web-api/search-item/
+    ///
+    /// - Parameters:
+    ///   - query: The search query
+    ///   - searchType: The type of item being searched for
+    ///   - limit: Number of items to return
+    ///   - offset: Index of the first item to return
+    ///   - market: Optional ISO 3166-1 alpha-2 country code
+    ///   - completionHandler: Called upon completion
+    private func search<T : Decodable>(query: String,
+                                       searchType: SearchType,
+                                       limit: UInt = 10,
+                                       offset: UInt = 0,
+                                       market: String? = nil,
+                                       completionHandler: @escaping (Result<T>) -> Void) {
+        var parameters = [
+            "q": query,
+            "limit": "\(limit)",
+            "offset": "\(offset)",
+            "type": searchType.rawValue
+        ]
+        parameters["market"] = market
+        let url = apiURL + "search"
+        client.get(url: url, parameters: parameters, headers: [:]) { body, response, error in
+            completionHandler(
+                self.decodeBody(body: body, response: response, error: error)
+            )
+        }
+    }
+
+    /// Search for an album
+    /// See https://developer.spotify.com/web-api/search-item/
+    ///
+    /// - Parameters:
+    ///   - query: The search query
+    ///   - limit: Number of items to return
+    ///   - offset: Index of the first item to return
+    ///   - market: Optional ISO 3166-1 alpha-2 country code
+    ///   - completionHandler: Called upon completion
+    public func searchAlbum(query: String,
+                            limit: UInt? = nil,
+                            offset: UInt? = nil,
+                            country: String? = nil,
+                            completionHandler: @escaping (Result<AlbumSearch>) -> Void) {
+        search(
+            query: query,
+            searchType: .album,
+            completionHandler: completionHandler
+        )
+    }
 }

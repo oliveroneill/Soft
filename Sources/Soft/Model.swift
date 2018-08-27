@@ -133,3 +133,7 @@ public struct Album: Decodable, Equatable {
 public struct Albums: Decodable, Equatable {
     let albums: [Album]
 }
+
+public struct AlbumSearch: Decodable, Equatable {
+    let albums: Page<SimplifiedAlbum>
+}
