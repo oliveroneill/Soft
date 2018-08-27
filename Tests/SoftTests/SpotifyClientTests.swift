@@ -914,4 +914,109 @@ final class SpotifyClientTests: XCTestCase {
             }
         }
     }
+
+    func testSearchPlaylist() {
+        let user = PublicUser(
+            displayName: "Holger Ihrig",
+            externalUrls: ["spotify": "https://open.spotify.com/user/holgar_the_red"],
+            followers: nil,
+            href: "https://api.spotify.com/v1/users/holgar_the_red",
+            id: "holgar_the_red",
+            images: nil,
+            uri: "spotify:user:holgar_the_red"
+        )
+        let images = [
+            Image(
+                url: "https://i.scdn.co/image/067acb64fa0b09d3f4892ac3924b17dcb1acdd1b",
+                width: 300,
+                height: 300
+            )
+        ]
+        let page = Page(
+            href: "https://api.spotify.com/v1/search?query=%22doom+metal%22&type=playlist&market=AU&offset=0&limit=20",
+            items: [
+                SimplifiedPlaylist(
+                    collaborative: false,
+                    externalUrls: ["spotify": "https://open.spotify.com/user/holgar_the_red/playlist/5Lzif2bIMW8RiRLtbYJHU0"],
+                    href: "https://api.spotify.com/v1/users/holgar_the_red/playlists/5Lzif2bIMW8RiRLtbYJHU0",
+                    id: "5Lzif2bIMW8RiRLtbYJHU0",
+                    images: images,
+                    name: "Doom Metal",
+                    owner: user,
+                    isPublic: true,
+                    snapshotId: "MTY0LGYxYmFhNWQ1OGQwMzZlNzViZjM3OTRmN2QwZDgzNDI4NWZiMTQ1NmI=",
+                    tracks: TracksObject(
+                        href: "https://api.spotify.com/v1/users/holgar_the_red/playlists/5Lzif2bIMW8RiRLtbYJHU0/tracks",
+                        total: 61
+                    ),
+                    uri: "spotify:user:holgar_the_red:playlist:5Lzif2bIMW8RiRLtbYJHU0"
+                )
+            ],
+            limit: 20,
+            next: "https://api.spotify.com/v1/search?query=%22doom+metal%22&type=playlist&market=AU&offset=20&limit=20",
+            offset: 0,
+            previous: nil,
+            total: 1201
+        )
+        let expected = PlaylistSearch(playlists: page)
+        let data = """
+{
+  "playlists": {
+    "href": "https://api.spotify.com/v1/search?query=%22doom+metal%22&type=playlist&market=AU&offset=0&limit=20",
+    "items": [
+      {
+        "collaborative": false,
+        "external_urls": {
+          "spotify": "https://open.spotify.com/user/holgar_the_red/playlist/5Lzif2bIMW8RiRLtbYJHU0"
+        },
+        "href": "https://api.spotify.com/v1/users/holgar_the_red/playlists/5Lzif2bIMW8RiRLtbYJHU0",
+        "id": "5Lzif2bIMW8RiRLtbYJHU0",
+        "images": [
+          {
+            "height": 300,
+            "url": "https://i.scdn.co/image/067acb64fa0b09d3f4892ac3924b17dcb1acdd1b",
+            "width": 300
+          }
+        ],
+        "name": "Doom Metal",
+        "owner": {
+          "display_name": "Holger Ihrig",
+          "external_urls": {
+            "spotify": "https://open.spotify.com/user/holgar_the_red"
+          },
+          "href": "https://api.spotify.com/v1/users/holgar_the_red",
+          "id": "holgar_the_red",
+          "type": "user",
+          "uri": "spotify:user:holgar_the_red"
+        },
+        "primary_color": null,
+        "public": true,
+        "snapshot_id": "MTY0LGYxYmFhNWQ1OGQwMzZlNzViZjM3OTRmN2QwZDgzNDI4NWZiMTQ1NmI=",
+        "tracks": {
+          "href": "https://api.spotify.com/v1/users/holgar_the_red/playlists/5Lzif2bIMW8RiRLtbYJHU0/tracks",
+          "total": 61
+        },
+        "type": "playlist",
+        "uri": "spotify:user:holgar_the_red:playlist:5Lzif2bIMW8RiRLtbYJHU0"
+      }
+    ],
+    "limit": 20,
+    "next": "https://api.spotify.com/v1/search?query=%22doom+metal%22&type=playlist&market=AU&offset=20&limit=20",
+    "offset": 0,
+    "previous": null,
+    "total": 1201
+  }
+}
+""".data(using: .utf8)!
+        let networkResponse: (Data?, HTTPURLResponse?, Error?) = (data, response, nil)
+        let client = SpotifyClient(client: FakeClient(expected: networkResponse))
+        client.searchPlaylist(query: "Example Query") {
+            switch $0 {
+            case .success(let result):
+                XCTAssertEqual(expected, result)
+            case .failure(let error):
+                XCTFail("Unexpected error: \(error)")
+            }
+        }
+    }
 }

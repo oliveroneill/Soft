@@ -331,4 +331,47 @@ public struct SpotifyClient {
             completionHandler: completionHandler
         )
     }
+
+    /// Search for a track
+    /// See https://developer.spotify.com/web-api/search-item/
+    ///
+    /// - Parameters:
+    ///   - query: The search query
+    ///   - limit: Number of items to return
+    ///   - offset: Index of the first item to return
+    ///   - market: Optional ISO 3166-1 alpha-2 country code
+    ///   - completionHandler: Called upon completion
+    public func searchTrack(query: String,
+                            limit: UInt? = nil,
+                            offset: UInt? = nil,
+                            country: String? = nil,
+                            completionHandler: @escaping (Result<TrackSearch>) -> Void) {
+        search(
+            query: query,
+            searchType: .track,
+            completionHandler: completionHandler
+        )
+    }
+
+    /// Search for a playlist
+    /// See https://developer.spotify.com/web-api/search-item/
+    ///
+    /// - Parameters:
+    ///   - query: The search query
+    ///   - limit: Number of items to return
+    ///   - offset: Index of the first item to return
+    ///   - market: Optional ISO 3166-1 alpha-2 country code
+    ///   - completionHandler: Called upon completion
+    public func searchPlaylist(query: String,
+                            limit: UInt? = nil,
+                            offset: UInt? = nil,
+                            country: String? = nil,
+                            completionHandler: @escaping (Result<PlaylistSearch>) -> Void) {
+        search(
+            query: query,
+            searchType: .playlist,
+            completionHandler: completionHandler
+        )
+    }
+
 }

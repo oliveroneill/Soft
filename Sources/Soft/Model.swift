@@ -130,6 +130,52 @@ public struct Album: Decodable, Equatable {
     let uri: String
 }
 
+public struct PublicUser: Decodable, Equatable {
+    let displayName: String?
+    let externalUrls: [String:String]
+    let followers: [String:String]?
+    let href: String
+    let id: String
+    let images: [Image]?
+    let uri: String
+}
+
+/// See https://developer.spotify.com/documentation/web-api/reference/search/search/#playlist-object---simplified
+public struct TracksObject: Decodable, Equatable {
+    let href: String
+    let total:Int
+}
+
+/// See https://developer.spotify.com/documentation/web-api/reference/search/search/#playlist-object---simplified
+public struct SimplifiedPlaylist: Decodable, Equatable {
+    let collaborative: Bool
+    let externalUrls: [String:String]
+    let href: String
+    let id: String
+    let images: [Image]
+    let name: String
+    let owner: PublicUser
+    let isPublic: Bool?
+    let snapshotId: String
+    let tracks: TracksObject
+    let uri: String
+
+    // Since public is a keyword we must use isPublic and convert it
+    enum CodingKeys: String, CodingKey {
+        case isPublic = "public"
+        case collaborative
+        case externalUrls
+        case href
+        case id
+        case images
+        case name
+        case owner
+        case snapshotId
+        case tracks
+        case uri
+    }
+}
+
 public struct Albums: Decodable, Equatable {
     let albums: [Album]
 }
@@ -141,3 +187,12 @@ public struct AlbumSearch: Decodable, Equatable {
 public struct ArtistSearch: Decodable, Equatable {
     let artists: Page<Artist>
 }
+
+public struct TrackSearch: Decodable, Equatable {
+    let artists: Page<Track>
+}
+
+public struct PlaylistSearch: Decodable, Equatable {
+    let playlists: Page<SimplifiedPlaylist>
+}
+
