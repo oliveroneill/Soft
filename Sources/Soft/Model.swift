@@ -196,3 +196,33 @@ public struct PlaylistSearch: Decodable, Equatable {
     let playlists: Page<SimplifiedPlaylist>
 }
 
+/// Context object
+/// See https://developer.spotify.com/web-api/get-the-users-currently-playing-track/
+public struct Context: Decodable, Equatable {
+    let uri: String
+    let href: String
+    let externalUrls: [String:String]
+}
+
+/// See https://developer.spotify.com/web-api/object-model/#play-history-object
+public struct PlayHistory: Decodable, Equatable {
+    let track: SimplifiedTrack
+    let playedAt: Date
+    let context: Context?
+}
+
+/// See https://developer.spotify.com/web-api/object-model/#cursor-based-paging-object
+public struct CursorBasedPage<T:Decodable & Equatable>: Decodable, Equatable {
+    let href: String
+    let items: [T]
+    let limit: UInt
+    let next: String?
+    let cursors: Cursor
+    let total: UInt?
+}
+
+/// See https://developer.spotify.com/web-api/object-model/#cursor-object
+public struct Cursor: Decodable, Equatable {
+    let before: String?
+    let after: String?
+}

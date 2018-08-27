@@ -8,6 +8,10 @@ extension Data {
     func decoded<T: Decodable>() throws -> T {
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
+        // Set date formatting
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSSZ"
+        decoder.dateDecodingStrategy = .formatted(dateFormatter)
         return try decoder.decode(T.self, from: self)
     }
 }
@@ -411,4 +415,32 @@ public struct SpotifyClient {
             )
         }
     }
+
+    //TODO: user playlist queries
+
+    //TODO: current user queries
+
+    /// Get the current user's recently played tracks
+    ///
+    /// - Parameters:
+    ///   - limit: the number of entities to return
+    ///   - completionHandler: Called upon completion
+    public func currentUserRecentlyPlayed(limit: UInt = 50,
+                                          completionHandler: @escaping (Result<CursorBasedPage<PlayHistory>>) -> Void) {
+        let url = apiURL + "me/player/recently-played"
+        let parameters = ["limit": "\(limit)"]
+        client.get(url: url, parameters: parameters, headers: [:]) { body, response, error in
+            completionHandler(
+                self.decodeBody(body: body, response: response, error: error)
+            )
+        }
+    }
+
+    //TODO: browse queries
+
+    //TODO: recommendations
+
+    //TODO: audio features
+
+    //TODO: player queries
 }

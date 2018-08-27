@@ -1053,4 +1053,117 @@ final class SpotifyClientTests: XCTestCase {
             }
         }
     }
+
+    func testCurrentUserRecentlyPlayed() {
+        let artist = SimplifiedArtist(
+            externalUrls: ["spotify": "https://open.spotify.com/artist/5INjqkS1o8h1imAzPqGZBb"],
+            href: "https://api.spotify.com/v1/artists/5INjqkS1o8h1imAzPqGZBb",
+            id: "5INjqkS1o8h1imAzPqGZBb",
+            name: "Tame Impala",
+            uri: "spotify:artist:5INjqkS1o8h1imAzPqGZBb"
+        )
+        let track = SimplifiedTrack(
+            artists: [artist],
+            availableMarkets: ["CA"],
+            discNumber: 1,
+            durationMs: 108546,
+            explicit: false,
+            externalUrls: ["spotify": "https://open.spotify.com/track/2gNfxysfBRfl9Lvi9T3v6R"],
+            href: "https://api.spotify.com/v1/tracks/2gNfxysfBRfl9Lvi9T3v6R",
+            id: "2gNfxysfBRfl9Lvi9T3v6R",
+            name: "Disciples",
+            previewUrl: "https://p.scdn.co/mp3-preview/6023e5aac2123d098ce490488966b28838b14fa2",
+            trackNumber: 9,
+            uri: "spotify:track:2gNfxysfBRfl9Lvi9T3v6R"
+        )
+        let isoDate = "2016-12-13T20:44:04.589Z"
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSSZ"
+        let date = dateFormatter.date(from:isoDate)!
+
+        let history = PlayHistory(
+            track: track,
+            playedAt: date,
+            context: Context(
+                uri: "spotify:artist:5INjqkS1o8h1imAzPqGZBb",
+                href: "https://api.spotify.com/v1/artists/5INjqkS1o8h1imAzPqGZBb",
+                externalUrls: ["spotify": "https://open.spotify.com/artist/5INjqkS1o8h1imAzPqGZBb"]
+            )
+        )
+        let page = CursorBasedPage(
+            href: "https://api.spotify.com/v1/me/player/recently-played?limit=2",
+            items: [history],
+            limit: 2,
+            next: "https://api.spotify.com/v1/me/player/recently-played?before=1481661737016&limit=2",
+            cursors: Cursor(
+                before: "1481661737016",
+                after: "1481661844589"
+            ),
+            total: nil
+        )
+        let data = """
+{
+  "items": [
+    {
+      "track": {
+        "artists": [
+          {
+            "external_urls": {
+              "spotify": "https://open.spotify.com/artist/5INjqkS1o8h1imAzPqGZBb"
+            },
+            "href": "https://api.spotify.com/v1/artists/5INjqkS1o8h1imAzPqGZBb",
+            "id": "5INjqkS1o8h1imAzPqGZBb",
+            "name": "Tame Impala",
+            "type": "artist",
+            "uri": "spotify:artist:5INjqkS1o8h1imAzPqGZBb"
+          }
+        ],
+        "available_markets": [
+          "CA"
+        ],
+        "disc_number": 1,
+        "duration_ms": 108546,
+        "explicit": false,
+        "external_urls": {
+          "spotify": "https://open.spotify.com/track/2gNfxysfBRfl9Lvi9T3v6R"
+        },
+        "href": "https://api.spotify.com/v1/tracks/2gNfxysfBRfl9Lvi9T3v6R",
+        "id": "2gNfxysfBRfl9Lvi9T3v6R",
+        "name": "Disciples",
+        "preview_url": "https://p.scdn.co/mp3-preview/6023e5aac2123d098ce490488966b28838b14fa2",
+        "track_number": 9,
+        "type": "track",
+        "uri": "spotify:track:2gNfxysfBRfl9Lvi9T3v6R"
+      },
+      "played_at": "2016-12-13T20:44:04.589Z",
+      "context": {
+        "uri": "spotify:artist:5INjqkS1o8h1imAzPqGZBb",
+        "external_urls": {
+          "spotify": "https://open.spotify.com/artist/5INjqkS1o8h1imAzPqGZBb"
+        },
+        "href": "https://api.spotify.com/v1/artists/5INjqkS1o8h1imAzPqGZBb",
+        "type": "artist"
+      },
+    }
+  ],
+  "next": "https://api.spotify.com/v1/me/player/recently-played?before=1481661737016&limit=2",
+  "cursors": {
+    "after": "1481661844589",
+    "before": "1481661737016"
+  },
+  "limit": 2,
+  "href": "https://api.spotify.com/v1/me/player/recently-played?limit=2"
+}
+""".data(using: .utf8)!
+        let networkResponse: (Data?, HTTPURLResponse?, Error?) = (data, response, nil)
+        let client = SpotifyClient(client: FakeClient(expected: networkResponse))
+        client.currentUserRecentlyPlayed {
+            switch $0 {
+            case .success(let result):
+                XCTAssertEqual(page, result)
+            case .failure(let error):
+                XCTFail("Unexpected error: \(error)")
+            }
+        }
+    }
 }
