@@ -310,4 +310,25 @@ public struct SpotifyClient {
             completionHandler: completionHandler
         )
     }
+
+    /// Search for an artist
+    /// See https://developer.spotify.com/web-api/search-item/
+    ///
+    /// - Parameters:
+    ///   - query: The search query
+    ///   - limit: Number of items to return
+    ///   - offset: Index of the first item to return
+    ///   - market: Optional ISO 3166-1 alpha-2 country code
+    ///   - completionHandler: Called upon completion
+    public func searchArtist(query: String,
+                            limit: UInt? = nil,
+                            offset: UInt? = nil,
+                            country: String? = nil,
+                            completionHandler: @escaping (Result<ArtistSearch>) -> Void) {
+        search(
+            query: query,
+            searchType: .artist,
+            completionHandler: completionHandler
+        )
+    }
 }
