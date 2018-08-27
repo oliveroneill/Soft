@@ -374,4 +374,25 @@ public struct SpotifyClient {
         )
     }
 
+    /// Get tracks for an album
+    /// See https://developer.spotify.com/web-api/get-albums-tracks/
+    ///
+    /// - Parameters:
+    ///   - albumID: Spotify Album ID
+    ///   - completionHandler: Called on completion
+    public func albumTracks(albumID: String,
+                            limit: UInt = 50,
+                            offset: UInt = 0,
+                            completionHandler: @escaping (Result<SimplifiedTrack>) -> Void) {
+        let url = apiURL + "albums/" + albumID + "/tracks"
+        let parameters = [
+            "offset": "\(offset)",
+            "limit": "\(limit)"
+        ]
+        client.get(url: url, parameters: parameters, headers: [:]) { body, response, error in
+            completionHandler(
+                self.decodeBody(body: body, response: response, error: error)
+            )
+        }
+    }
 }
