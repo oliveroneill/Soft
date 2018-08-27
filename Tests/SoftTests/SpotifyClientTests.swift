@@ -711,15 +711,6 @@ final class SpotifyClientTests: XCTestCase {
             name: "Cyndi Lauper",
             uri: "spotify:artist:2BTZIqw0ntH9MvilQ3ewNY"
         )
-        let simplifiedAlbum = SimplifiedAlbum(
-            artists: [artist], albumType: .single,
-            availableMarkets: ["AD"],
-            externalUrls: ["spotify": "https://open.spotify.com/album/0tGPJ0bkWOUmH7MEOR77qc"],
-            href: "https://api.spotify.com/v1/albums/0tGPJ0bkWOUmH7MEOR77qc",
-            id: "0tGPJ0bkWOUmH7MEOR77qc",
-            images: images, name: "Cut To The Feeling",
-            uri: "spotify:album:0tGPJ0bkWOUmH7MEOR77qc"
-        )
         let track = SimplifiedTrack(
             artists: [artist],
             availableMarkets: ["AD"],
