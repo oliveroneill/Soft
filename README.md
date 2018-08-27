@@ -1,5 +1,8 @@
 # Soft
 
+[![Platform](https://img.shields.io/badge/Swift-4.1-orange.svg)](https://img.shields.io/badge/Swift-4.1-orange.svg)
+[![Swift Package Manager](https://img.shields.io/badge/spm-compatible-brightgreen.svg?style=flat)](https://swift.org/package-manager)
+
 A Spotify Web API library for Swift. This is to be used with Swift Package
 Manager and eventually support Linux, so that it can run in desktop
 applications.
