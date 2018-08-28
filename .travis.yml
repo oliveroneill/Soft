@@ -1,7 +1,5 @@
 # Config based on https://github.com/IBM-Swift/Package-Builder
 # At some point I'll add linux to the matrix here
-env:
-  - DEFAULT_SWIFT=swift-4.1.3-RELEASE
 matrix:
   include:
     - os: osx
