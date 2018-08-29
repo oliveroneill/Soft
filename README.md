@@ -28,7 +28,7 @@ are supported. See the bug report
 Add this to your Package.swift:
 
 ```swift
-.package(url: "https://github.com/oliveroneill/Soft.git", .upToNextMajor(from: "0.0.2")),
+.package(url: "https://github.com/oliveroneill/Soft.git", .upToNextMajor(from: "0.0.3")),
 ```
 
 ## Usage
