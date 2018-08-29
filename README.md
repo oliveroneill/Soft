@@ -7,20 +7,22 @@
 ![Linux](https://img.shields.io/badge/os-linux-green.svg?style=flat)
 
 A Spotify Web API library for Swift. This is to be used with Swift Package
-Manager and eventually support Linux, so that it can run in desktop
+Manager and supports Linux, so that it can run in desktop and server-side
 applications.
 
 This is based on [rspotify](https://github.com/samrayleung/rspotify)'s
 implementation.
 
-This is still a work in progress as it does not yet support any operations.
-Any help would be appreciated.
+This is still a work in progress and supports a limited number of calls.
+See [SpotifyClient.swift](https://github.com/oliveroneill/Soft/blob/master/Sources/Soft/SpotifyClient.swift)
+for the supported calls and some TODOs on what to implement next.
+Any help is much appreciated.
 
 ## Linux Support
-Due to `keyEncodingStrategy` and `keyDecodingStrategy` not being supported,
-this will hopefully be supported in the near future as a pull request was
-merged [here](https://github.com/apple/swift-corelibs-foundation/pull/1561).
-See the bug report [here](https://bugs.swift.org/browse/SR-7180).
+Linux is now supported in Soft! In future we will remove all the unnecessary
+`CodingKey` declarations, once `keyEncodingStrategy` and `keyDecodingStrategy`
+are supported. See the bug report
+[here](https://bugs.swift.org/browse/SR-7180).
 
 ## Installation
 Add this to your Package.swift:
@@ -30,9 +32,10 @@ Add this to your Package.swift:
 ```
 
 ## Usage
-See `SpotifyClient.swift` for methods that are currently available.
-There are a number of TODOs there and I'd appreciate help in completing
-the implementation.
+See [SpotifyClient.swift](https://github.com/oliveroneill/Soft/blob/master/Sources/Soft/SpotifyClient.swift)
+for the calls are currently available. There are a number of TODOs in that
+class for calls that need implementing and I'd appreciate help in
+completing the implementation.
 
 ### Authorization
 All methods require user authorization which means you will need to generate
