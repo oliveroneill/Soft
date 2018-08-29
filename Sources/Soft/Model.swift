@@ -20,6 +20,18 @@ public struct SimplifiedAlbum: Decodable, Equatable {
     let images: [Image]
     let name: String
     let uri: String
+
+    enum CodingKeys: String, CodingKey {
+        case artists
+        case albumType = "album_type"
+        case availableMarkets = "available_markets"
+        case externalUrls = "external_urls"
+        case href
+        case id
+        case images
+        case name
+        case uri
+    }
 }
 
 /// https://developer.spotify.com/web-api/object-model/#artist-object-simplified
@@ -29,6 +41,13 @@ public struct SimplifiedArtist: Decodable, Equatable {
     let id: String
     let name: String
     let uri: String
+    enum CodingKeys: String, CodingKey {
+        case externalUrls = "external_urls"
+        case href
+        case id
+        case name
+        case uri
+    }
 }
 
 /// https://developer.spotify.com/web-api/object-model/#track-object-simplified
@@ -45,6 +64,21 @@ public struct SimplifiedTrack: Decodable, Equatable {
     let previewUrl: String?
     let trackNumber: UInt
     let uri: String
+
+    enum CodingKeys: String, CodingKey {
+        case artists
+        case availableMarkets = "available_markets"
+        case discNumber = "disc_number"
+        case durationMs = "duration_ms"
+        case explicit
+        case externalUrls = "external_urls"
+        case href
+        case id
+        case name
+        case previewUrl = "preview_url"
+        case trackNumber = "track_number"
+        case uri
+    }
 }
 
 /// https://developer.spotify.com/web-api/object-model/#track-object-full
@@ -63,6 +97,23 @@ public struct Track: Decodable, Equatable {
     let previewUrl: String?
     let trackNumber: UInt
     let uri: String
+
+    enum CodingKeys: String, CodingKey {
+        case album
+        case artists
+        case availableMarkets = "available_markets"
+        case discNumber = "disc_number"
+        case durationMs = "duration_ms"
+        case externalIds = "external_ids"
+        case externalUrls = "external_urls"
+        case href
+        case id
+        case name
+        case popularity
+        case previewUrl = "preview_url"
+        case trackNumber = "track_number"
+        case uri
+    }
 }
 
 public struct Tracks: Decodable, Equatable {
@@ -86,6 +137,18 @@ public struct Artist: Decodable, Equatable {
     let name: String
     let popularity: UInt
     let uri: String
+
+    enum CodingKeys: String, CodingKey {
+        case externalUrls = "external_urls"
+        case followers
+        case genres
+        case href
+        case id
+        case images
+        case name
+        case popularity
+        case uri
+    }
 }
 
 public struct Artists: Decodable, Equatable {
@@ -128,6 +191,25 @@ public struct Album: Decodable, Equatable {
     let releaseDatePrecision: String
     let tracks: Page<SimplifiedTrack>
     let uri: String
+
+    enum CodingKeys: String, CodingKey {
+        case artists
+        case albumType = "album_type"
+        case availableMarkets = "available_markets"
+        case copyrights
+        case externalIds = "external_ids"
+        case externalUrls = "external_urls"
+        case genres
+        case href
+        case id
+        case images
+        case name
+        case popularity
+        case releaseDate = "release_date"
+        case releaseDatePrecision = "release_date_precision"
+        case tracks
+        case uri
+    }
 }
 
 public struct PublicUser: Decodable, Equatable {
@@ -138,6 +220,16 @@ public struct PublicUser: Decodable, Equatable {
     let id: String
     let images: [Image]?
     let uri: String
+
+    enum CodingKeys: String, CodingKey {
+        case displayName = "display_name"
+        case externalUrls = "external_urls"
+        case followers
+        case href
+        case id
+        case images
+        case uri
+    }
 }
 
 /// See https://developer.spotify.com/documentation/web-api/reference/search/search/#playlist-object---simplified
@@ -164,13 +256,13 @@ public struct SimplifiedPlaylist: Decodable, Equatable {
     enum CodingKeys: String, CodingKey {
         case isPublic = "public"
         case collaborative
-        case externalUrls
+        case externalUrls = "external_urls"
         case href
         case id
         case images
         case name
         case owner
-        case snapshotId
+        case snapshotId = "snapshot_id"
         case tracks
         case uri
     }
@@ -202,6 +294,12 @@ public struct Context: Decodable, Equatable {
     let uri: String
     let href: String
     let externalUrls: [String:String]
+
+    enum CodingKeys: String, CodingKey {
+        case uri
+        case href
+        case externalUrls = "external_urls"
+    }
 }
 
 /// See https://developer.spotify.com/web-api/object-model/#play-history-object
@@ -209,6 +307,12 @@ public struct PlayHistory: Decodable, Equatable {
     let track: SimplifiedTrack
     let playedAt: Date
     let context: Context?
+
+    enum CodingKeys: String, CodingKey {
+        case track
+        case playedAt = "played_at"
+        case context
+    }
 }
 
 /// See https://developer.spotify.com/web-api/object-model/#cursor-based-paging-object

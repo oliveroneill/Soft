@@ -7,7 +7,9 @@ extension Data {
     /// - Throws: If the data is not valid
     func decoded<T: Decodable>() throws -> T {
         let decoder = JSONDecoder()
-        decoder.keyDecodingStrategy = .convertFromSnakeCase
+        // TODO: enable this once linux supports it
+        // decoder.keyDecodingStrategy = .convertFromSnakeCase
+
         // Set date formatting
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSSZ"

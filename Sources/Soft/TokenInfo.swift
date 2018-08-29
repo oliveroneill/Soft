@@ -54,6 +54,15 @@ public struct TokenInfo: Codable {
     let scope: String
     let expiresAt: Date?
     let refreshToken: String?
+
+    enum CodingKeys: String, CodingKey {
+        case accessToken = "access_token"
+        case tokenType = "token_type"
+        case scope
+        case expiresAt = "expires_at"
+        case refreshToken = "refresh_token"
+    }
+
     /// Whether this token has expired
     var isExpired: Bool {
         get {
@@ -74,6 +83,14 @@ public struct TokenInfo: Codable {
         let scope: String
         let expiresIn: Int?
         let refreshToken: String?
+
+        enum CodingKeys: String, CodingKey {
+            case accessToken = "access_token"
+            case tokenType = "token_type"
+            case scope
+            case expiresIn = "expires_in"
+            case refreshToken = "refresh_token"
+        }
     }
 
     /// Convert a Spotify API network response to more convenient TokenInfo
@@ -99,7 +116,8 @@ public struct TokenInfo: Codable {
     /// - Throws: If encoding fails
     func toJSON() throws -> Data {
         let encoder = JSONEncoder()
-        encoder.keyEncodingStrategy = .convertToSnakeCase
+        // TODO: enable this once linux supports it
+        // encoder.keyEncodingStrategy = .convertToSnakeCase
         return try encoder.encode(self)
     }
 
@@ -111,7 +129,8 @@ public struct TokenInfo: Codable {
     /// - Throws: If decoding fails
     static func fromSpotify(data: Data) throws -> TokenInfo {
         let decoder = JSONDecoder()
-        decoder.keyDecodingStrategy = .convertFromSnakeCase
+        // TODO: enable this once linux supports it
+        // decoder.keyDecodingStrategy = .convertFromSnakeCase
         let response = try decoder.decode(
             SpotifyTokenInfo.self,
             from: data
@@ -127,7 +146,8 @@ public struct TokenInfo: Codable {
     /// - Throws: If decoding fails
     static func fromJSON(data: Data) throws -> TokenInfo {
         let decoder = JSONDecoder()
-        decoder.keyDecodingStrategy = .convertFromSnakeCase
+        // TODO: enable this once linux supports it
+        // decoder.keyDecodingStrategy = .convertFromSnakeCase
         return try decoder.decode(
             TokenInfo.self,
             from: data
