@@ -79,3 +79,9 @@ do {
     print(error)
 }
 ```
+
+### Running tests on Linux
+Use this command to run tests on Linux while on macOS, using Docker:
+```bash
+docker run --rm -v "$(pwd):/pkg" -w "/pkg" swift:latest /bin/bash -c "swift test --build-path ./.build/linux"
+```
