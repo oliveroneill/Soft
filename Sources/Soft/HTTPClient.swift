@@ -52,7 +52,9 @@ class SwiftyRequestClient: HTTPClient {
              headers: [String:String],
              completionHandler: @escaping (Data?, HTTPURLResponse?, Error?) -> Void) {
         let request = RestRequest(method: .get, url: url)
-        request.queryItems = parameters.map {URLQueryItem(name: $0, value: $1)}
+        if parameters.count > 0 {
+            request.queryItems = parameters.map {URLQueryItem(name: $0, value: $1)}
+        }
         request.headerParameters = headers
         request.contentType = "application/json"
         request.response(completionHandler: completionHandler)

@@ -18,6 +18,13 @@ extension Data {
     }
 }
 
+/// Spotify client errors
+///
+/// - noPagesLeft: If there are no pages left when calling nextPage()
+public enum ClientError: Error {
+    case noPagesLeft
+}
+
 /// Use this struct to make Spotify Web API calls
 public struct SpotifyClient {
     private let apiURL = "https://api.spotify.com/v1/"
@@ -432,6 +439,26 @@ public struct SpotifyClient {
         let url = apiURL + "me/player/recently-played"
         let parameters = ["limit": "\(limit)"]
         client.get(url: url, parameters: parameters, headers: [:]) { body, response, error in
+            completionHandler(
+                self.decodeBody(body: body, response: response, error: error)
+            )
+        }
+    }
+
+    /// Use this to retrieve the next page of a CursorBasedPage
+    ///
+    /// - Parameters:
+    ///   - page: The current page. The `next` property will be used to make
+    ///   the request. If `next` is nil then a noPagesLeft error will be
+    ///   returned
+    ///   - completionHandler: Called upon completion
+    public func nextPage<T : Decodable>(page: CursorBasedPage<T>,
+                                        completionHandler: @escaping (Result<CursorBasedPage<T>>) -> Void) {
+        guard let next = page.next else {
+            completionHandler(.failure(ClientError.noPagesLeft))
+            return
+        }
+        client.get(url: next, parameters: [:], headers: [:]) { body, response, error in
             completionHandler(
                 self.decodeBody(body: body, response: response, error: error)
             )

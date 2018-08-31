@@ -321,7 +321,9 @@ public struct CursorBasedPage<T:Decodable & Equatable>: Decodable, Equatable {
     public let items: [T]
     public let limit: UInt
     public let next: String?
-    public let cursors: Cursor
+    // The documentation does not state this is optional but testing it has
+    // shown that it may be null
+    public let cursors: Cursor?
     public let total: UInt?
 }
 
