@@ -112,32 +112,29 @@ final class SpotifyOAuthTests: XCTestCase {
 
     func testSpotifyOAuthInvalidInput() {
         // Ensure it fails on empty strings
-        do {
-            _ = try SpotifyOAuth(
+        XCTAssertThrowsError(
+            try SpotifyOAuth(
                 clientID: "", clientSecret: "",
                 redirectURI: URL(string: "http://localhost:8080")!,
                 state: "", scope: ""
             )
-            XCTFail("Expected failure")
-        } catch {
+        ) {
             XCTAssertEqual(
                 InvalidCredentialsError.emptyInput,
-                error as? InvalidCredentialsError
+                $0 as? InvalidCredentialsError
             )
         }
     }
 
     func testSpotifyOAuthValidInput() {
         // Ensure it passes on strings that are not empty
-        do {
-            _ = try SpotifyOAuth(
+        XCTAssertNoThrow(
+            try SpotifyOAuth(
                 clientID: clientID, clientSecret: clientSecret,
                 redirectURI: URL(string: "http://localhost:8080")!,
                 state: "", scope: ""
             )
-        } catch {
-            XCTFail("Unexpected failure \(error)")
-        }
+        )
     }
 
     /// Fake token fetcher for mocking network interaction

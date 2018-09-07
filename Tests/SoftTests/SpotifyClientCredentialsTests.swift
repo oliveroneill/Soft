@@ -53,27 +53,22 @@ final class SpotifyClientCredentialsTests: XCTestCase {
 
     func testSpotifyClientCredentialsInvalidInput() {
         // Ensure it fails on empty strings
-        do {
-            _ = try SpotifyClientCredentials(clientID: "", clientSecret: "")
-            XCTFail("Expected failure")
-        } catch {
+        XCTAssertThrowsError(try SpotifyClientCredentials(clientID: "", clientSecret: "")) {
             XCTAssertEqual(
                 InvalidCredentialsError.emptyInput,
-                error as? InvalidCredentialsError
+                $0 as? InvalidCredentialsError
             )
         }
     }
 
     func testSpotifyClientCredentialsValidInput() {
         // Ensure it passes on strings that are not empty
-        do {
-            _ = try SpotifyClientCredentials(
+        XCTAssertNoThrow(
+            try SpotifyClientCredentials(
                 clientID: clientID,
                 clientSecret: clientSecret
             )
-        } catch {
-            XCTFail("Unexpected failure \(error)")
-        }
+        )
     }
 
     func testFromJSON() {
