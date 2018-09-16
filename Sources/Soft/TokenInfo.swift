@@ -55,6 +55,15 @@ public struct TokenInfo: Codable {
     let expiresAt: Date?
     let refreshToken: String?
 
+    public init(accessToken: String, tokenType: String, scope: String,
+                expiresAt: Date?, refreshToken: String?) {
+        self.accessToken = accessToken
+        self.tokenType = tokenType
+        self.scope = scope
+        self.expiresAt = expiresAt
+        self.refreshToken = refreshToken
+    }
+
     enum CodingKeys: String, CodingKey {
         case accessToken = "access_token"
         case tokenType = "token_type"
