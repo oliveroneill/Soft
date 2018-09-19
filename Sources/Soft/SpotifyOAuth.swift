@@ -137,8 +137,8 @@ public struct SpotifyOAuth {
     /// - Parameters:
     ///   - refreshToken: The refresh token from the Spotify API response
     ///   - completionHandler: Called upon completion of refresh
-    private func refreshAccessToken(refreshToken: String,
-                                    completionHandler: @escaping (Result<TokenInfo>) -> Void) {
+    public func refreshAccessToken(refreshToken: String,
+                                   completionHandler: @escaping (Result<TokenInfo>) -> Void) {
         let payload = [
             "refresh_token": refreshToken,
             "grant_type": "refresh_token"
