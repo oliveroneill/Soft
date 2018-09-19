@@ -73,7 +73,7 @@ public struct TokenInfo: Codable {
     }
 
     /// Whether this token has expired
-    var isExpired: Bool {
+    public var isExpired: Bool {
         get {
             guard let expiresAt = expiresAt else {
                 return true
