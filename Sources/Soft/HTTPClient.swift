@@ -63,7 +63,7 @@ class SwiftyRequestClient: HTTPClient {
     func post(url: String, payload: Data,
               headers: [String:String],
               completionHandler: @escaping (Data?, HTTPURLResponse?, Error?) -> Void) {
-        let request = RestRequest(method: .get, url: url)
+        let request = RestRequest(method: .post, url: url)
         request.messageBody = payload
         request.headerParameters = headers
         request.contentType = "application/json"
@@ -73,7 +73,7 @@ class SwiftyRequestClient: HTTPClient {
     func put(url: String, payload: Data,
              headers: [String:String],
              completionHandler: @escaping (Data?, HTTPURLResponse?, Error?) -> Void) {
-        let request = RestRequest(method: .get, url: url)
+        let request = RestRequest(method: .put, url: url)
         request.messageBody = payload
         request.headerParameters = headers
         request.contentType = "application/json"
@@ -83,7 +83,7 @@ class SwiftyRequestClient: HTTPClient {
     func delete(url: String, payload: Data,
                 headers: [String:String],
                 completionHandler: @escaping (Data?, HTTPURLResponse?, Error?) -> Void) {
-        let request = RestRequest(method: .get, url: url)
+        let request = RestRequest(method: .delete, url: url)
         request.messageBody = payload
         request.headerParameters = headers
         request.contentType = "application/json"
