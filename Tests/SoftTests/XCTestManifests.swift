@@ -29,6 +29,7 @@ extension SpotifyClientTests {
         ("testArtists", testArtists),
         ("testArtistTopTracks", testArtistTopTracks),
         ("testCurrentUserRecentlyPlayed", testCurrentUserRecentlyPlayed),
+        ("testCurrentUserRecentlyPlayedWithoutDecimalInDate", testCurrentUserRecentlyPlayedWithoutDecimalInDate),
         ("testRelatedArtists", testRelatedArtists),
         ("testSearchArtist", testSearchArtist),
         ("testSearchPlaylist", testSearchPlaylist),

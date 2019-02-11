@@ -11,8 +11,7 @@ extension Data {
         // decoder.keyDecodingStrategy = .convertFromSnakeCase
 
         // Set date formatting
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSSZ"
+        let dateFormatter = SpotifyDateFormatter()
         decoder.dateDecodingStrategy = .formatted(dateFormatter)
         return try decoder.decode(T.self, from: self)
     }
