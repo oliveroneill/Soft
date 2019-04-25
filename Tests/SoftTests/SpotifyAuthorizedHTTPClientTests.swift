@@ -13,8 +13,8 @@ final class SpotifyAuthorizedHTTPClientTests: XCTestCase {
     var token: TokenInfo!
     var networkResponse: (Data?, HTTPURLResponse?, Error?)!
     var response: HTTPURLResponse!
-    let data = Data(bytes: [12, 22, 43, 1, 90])
-    let payload = Data(bytes: [44, 12, 63, 10, 99])
+    let data = Data([12, 22, 43, 1, 90])
+    let payload = Data([44, 12, 63, 10, 99])
     let urlString = "http://y.com/"
     let url = URL(string: "http://x.com/")!
     let headers = ["a":"header", "x":"y"]
