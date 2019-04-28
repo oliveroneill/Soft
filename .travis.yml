@@ -9,6 +9,9 @@ matrix:
       osx_image: xcode10.2
       sudo: required
 
+env:
+  - SWIFT_VERSION=5.0
+
 install:
   - eval "$(curl -sL https://swiftenv.fuller.li/install.sh)"
 
