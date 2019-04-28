@@ -234,8 +234,13 @@ final class SpotifyOAuthTests: XCTestCase {
                     XCTAssertEqual(1, fileHandler.writeCalls.count)
                     XCTAssertEqual(0, fileHandler.readCalls.count)
                     do {
-                        let json = try tokenInfo.toJSON()
-                        XCTAssertEqual(String(data: json, encoding: .utf8), String(data: fileHandler.writeCalls[0].data, encoding: .utf8))
+                        // Decode the write call to ensure we stored the token
+                        // correctly
+                        let writeCall = try JSONDecoder().decode(
+                            TokenInfo.self,
+                            from: fileHandler.writeCalls[0].data
+                        )
+                        XCTAssertEqual(self.networkToken, writeCall)
                         XCTAssertEqual(self.cachePath, fileHandler.writeCalls[0].url)
                     } catch {
                         XCTFail("\(error)")
@@ -330,11 +335,13 @@ final class SpotifyOAuthTests: XCTestCase {
                     XCTAssertEqual(1, fileHandler.writeCalls.count)
                     XCTAssertEqual(0, fileHandler.readCalls.count)
                     do {
-                        let json = try self.networkToken.toJSON()
-                        XCTAssertEqual(
-                            String(data: json, encoding: .utf8),
-                            String(data: fileHandler.writeCalls[0].data, encoding: .utf8)
+                        // Decode the write call to ensure we stored the token
+                        // correctly
+                        let writeCall = try JSONDecoder().decode(
+                            TokenInfo.self,
+                            from: fileHandler.writeCalls[0].data
                         )
+                        XCTAssertEqual(self.networkToken, writeCall)
                         XCTAssertEqual(
                             self.cachePath,
                             fileHandler.writeCalls[0].url

@@ -48,7 +48,7 @@ public func getToken(oauth: SpotifyOAuth, completionHandler: @escaping (Result<T
 }
 
 /// Spotify token-info
-public struct TokenInfo: Codable {
+public struct TokenInfo: Codable, Equatable {
     let accessToken: String
     let tokenType: String
     let scope: String
