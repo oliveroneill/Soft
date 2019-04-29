@@ -105,16 +105,16 @@ final class SpotifyAuthorizedHTTPClientTests: XCTestCase {
 
     class FakeClientCredentials: ClientCredentials {
         /// Keeps track of calls to fetchAccessToken
-        private let result: Result<TokenInfo>
+        private let result: Result<TokenInfo, Error>
 
         /// Create a FakeClientCredentials
         ///
         /// - Parameter result: The result to be returned from fetchAccessToken
-        init(result: Result<TokenInfo>) {
+        init(result: Result<TokenInfo, Error>) {
             self.result = result
         }
 
-        func fetchAccessToken(completionHandler: @escaping (Result<TokenInfo>) -> Void) {
+        func fetchAccessToken(completionHandler: @escaping (Result<TokenInfo, Error>) -> Void) {
             completionHandler(result)
         }
     }

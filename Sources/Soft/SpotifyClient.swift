@@ -69,7 +69,7 @@ public struct SpotifyClient {
     /// - Returns: An error if the response is invalid or a new instance if
     /// successful
     private func decodeBody<T: Decodable>(body: Data?, response: HTTPURLResponse?,
-                                          error: Error?) -> Result<T> {
+                                          error: Error?) -> Result<T, Error> {
         // If there is an error then fail
         if let error = error {
             return .failure(error)
@@ -101,7 +101,8 @@ public struct SpotifyClient {
     /// - Parameters:
     ///   - trackID: Spotify Track ID
     ///   - completionHandler: Called on completion
-    public func track(trackID: String, completionHandler: @escaping (Result<Track>) -> Void) {
+    public func track(trackID: String,
+                      completionHandler: @escaping (Result<Track, Error>) -> Void) {
         let url = apiURL + "tracks/" + trackID
         client.get(url: url, parameters: [:], headers: [:]) { body, response, error in
             completionHandler(
@@ -118,7 +119,8 @@ public struct SpotifyClient {
     ///   - market: Optionally specify the market. The format is ISO 3166-1
     ///   alpha-2 country code
     ///   - completionHandler: Called on completion
-    public func tracks(trackIDs: [String], market: String? = nil, completionHandler: @escaping (Result<Tracks>) -> Void) {
+    public func tracks(trackIDs: [String], market: String? = nil,
+                       completionHandler: @escaping (Result<Tracks, Error>) -> Void) {
         let url = apiURL + "tracks/"
         var parameters = ["ids": trackIDs.joined(separator: ",")]
         parameters["market"] = market
@@ -135,7 +137,8 @@ public struct SpotifyClient {
     /// - Parameters:
     ///   - artistID: Spotify artist ID
     ///   - completionHandler: Called on completion
-    public func artist(artistID: String, completionHandler: @escaping (Result<Artist>) -> Void) {
+    public func artist(artistID: String,
+                       completionHandler: @escaping (Result<Artist, Error>) -> Void) {
         let url = apiURL + "artists/" + artistID
         client.get(url: url, parameters: [:], headers: [:]) { body, response, error in
             completionHandler(
@@ -150,7 +153,8 @@ public struct SpotifyClient {
     /// - Parameters:
     ///   - artistIDs: List of Spotify artist IDs
     ///   - completionHandler: Called on completion
-    public func artists(artistIDs: [String], completionHandler: @escaping (Result<Artists>) -> Void) {
+    public func artists(artistIDs: [String],
+                        completionHandler: @escaping (Result<Artists, Error>) -> Void) {
         let url = apiURL + "artists/"
         let parameters = ["ids": artistIDs.joined(separator: ",")]
         client.get(url: url, parameters: parameters, headers: [:]) { body, response, error in
@@ -174,7 +178,7 @@ public struct SpotifyClient {
     public func artistAlbums(artistID: String, albumTypes: [AlbumType]? = nil,
                              country: String? = nil, limit: UInt? = nil,
                              offset: UInt? = nil,
-                             completionHandler: @escaping (Result<Page<SimplifiedAlbum>>) -> Void) {
+                             completionHandler: @escaping (Result<Page<SimplifiedAlbum>, Error>) -> Void) {
         let url = apiURL + "artists/" + artistID + "/albums"
         var parameters: [String:String] = [:]
         if let limit = limit {
@@ -203,7 +207,7 @@ public struct SpotifyClient {
     ///     code
     ///   - completionHandler: Called on completion
     public func artistTopTracks(artistID: String, country: String,
-                                completionHandler: @escaping (Result<Tracks>) -> Void) {
+                                completionHandler: @escaping (Result<Tracks, Error>) -> Void) {
         let url = apiURL + "artists/" + artistID + "/top-tracks"
         let parameters = ["country": country]
         client.get(url: url, parameters: parameters, headers: [:]) { body, response, error in
@@ -220,7 +224,7 @@ public struct SpotifyClient {
     ///   - artistID: Spotify Artist ID
     ///   - completionHandler: Called on completion
     public func relatedArtists(artistID: String,
-                                completionHandler: @escaping (Result<Artists>) -> Void) {
+                                completionHandler: @escaping (Result<Artists, Error>) -> Void) {
         let url = apiURL + "artists/" + artistID + "/related-artists"
         client.get(url: url, parameters: [:], headers: [:]) { body, response, error in
             completionHandler(
@@ -236,7 +240,7 @@ public struct SpotifyClient {
     ///   - albumID: Spotify Album ID
     ///   - completionHandler: Called on completion
     public func album(albumID: String,
-                      completionHandler: @escaping (Result<Album>) -> Void) {
+                      completionHandler: @escaping (Result<Album, Error>) -> Void) {
         let url = apiURL + "albums/" + albumID
         client.get(url: url, parameters: [:], headers: [:]) { body, response, error in
             completionHandler(
@@ -252,7 +256,7 @@ public struct SpotifyClient {
     ///   - albumIDs: Spotify Album IDs
     ///   - completionHandler: Called on completion
     public func albums(albumIDs: [String],
-                      completionHandler: @escaping (Result<Albums>) -> Void) {
+                      completionHandler: @escaping (Result<Albums, Error>) -> Void) {
         let url = apiURL + "albums/?ids=" + albumIDs.joined(separator: ",")
         client.get(url: url, parameters: [:], headers: [:]) { body, response, error in
             completionHandler(
@@ -286,7 +290,7 @@ public struct SpotifyClient {
                                        limit: UInt = 10,
                                        offset: UInt = 0,
                                        market: String? = nil,
-                                       completionHandler: @escaping (Result<T>) -> Void) {
+                                       completionHandler: @escaping (Result<T, Error>) -> Void) {
         var parameters = [
             "q": query,
             "limit": "\(limit)",
@@ -315,7 +319,7 @@ public struct SpotifyClient {
                             limit: UInt? = nil,
                             offset: UInt? = nil,
                             country: String? = nil,
-                            completionHandler: @escaping (Result<AlbumSearch>) -> Void) {
+                            completionHandler: @escaping (Result<AlbumSearch, Error>) -> Void) {
         search(
             query: query,
             searchType: .album,
@@ -336,7 +340,7 @@ public struct SpotifyClient {
                             limit: UInt? = nil,
                             offset: UInt? = nil,
                             country: String? = nil,
-                            completionHandler: @escaping (Result<ArtistSearch>) -> Void) {
+                            completionHandler: @escaping (Result<ArtistSearch, Error>) -> Void) {
         search(
             query: query,
             searchType: .artist,
@@ -357,7 +361,7 @@ public struct SpotifyClient {
                             limit: UInt? = nil,
                             offset: UInt? = nil,
                             country: String? = nil,
-                            completionHandler: @escaping (Result<TrackSearch>) -> Void) {
+                            completionHandler: @escaping (Result<TrackSearch, Error>) -> Void) {
         search(
             query: query,
             searchType: .track,
@@ -378,7 +382,7 @@ public struct SpotifyClient {
                             limit: UInt? = nil,
                             offset: UInt? = nil,
                             country: String? = nil,
-                            completionHandler: @escaping (Result<PlaylistSearch>) -> Void) {
+                            completionHandler: @escaping (Result<PlaylistSearch, Error>) -> Void) {
         search(
             query: query,
             searchType: .playlist,
@@ -395,7 +399,7 @@ public struct SpotifyClient {
     public func albumTracks(albumID: String,
                             limit: UInt = 50,
                             offset: UInt = 0,
-                            completionHandler: @escaping (Result<SimplifiedTrack>) -> Void) {
+                            completionHandler: @escaping (Result<SimplifiedTrack, Error>) -> Void) {
         let url = apiURL + "albums/" + albumID + "/tracks"
         let parameters = [
             "offset": "\(offset)",
@@ -415,7 +419,7 @@ public struct SpotifyClient {
     ///   - albumID: Spotify Album ID
     ///   - completionHandler: Called on completion
     public func user(userID: String,
-                     completionHandler: @escaping (Result<PublicUser>) -> Void) {
+                     completionHandler: @escaping (Result<PublicUser, Error>) -> Void) {
         let url = apiURL + "users/" + userID
         client.get(url: url, parameters: [:], headers: [:]) { body, response, error in
             completionHandler(
@@ -434,7 +438,7 @@ public struct SpotifyClient {
     ///   - limit: the number of entities to return
     ///   - completionHandler: Called upon completion
     public func currentUserRecentlyPlayed(limit: UInt = 50,
-                                          completionHandler: @escaping (Result<CursorBasedPage<PlayHistory>>) -> Void) {
+                                          completionHandler: @escaping (Result<CursorBasedPage<PlayHistory>, Error>) -> Void) {
         let url = apiURL + "me/player/recently-played"
         let parameters = ["limit": "\(limit)"]
         client.get(url: url, parameters: parameters, headers: [:]) { body, response, error in
@@ -452,7 +456,7 @@ public struct SpotifyClient {
     ///   returned
     ///   - completionHandler: Called upon completion
     public func nextPage<T : Decodable>(page: CursorBasedPage<T>,
-                                        completionHandler: @escaping (Result<CursorBasedPage<T>>) -> Void) {
+                                        completionHandler: @escaping (Result<CursorBasedPage<T>, Error>) -> Void) {
         guard let next = page.next else {
             completionHandler(.failure(ClientError.noPagesLeft))
             return

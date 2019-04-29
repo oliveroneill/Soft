@@ -49,7 +49,7 @@ public struct SpotifyClientCredentials: ClientCredentials {
     /// Request access token from Spotify API
     ///
     /// - Parameter completionHandler: Called upon completion
-    public func fetchAccessToken(completionHandler: @escaping (Result<TokenInfo>) -> Void) {
+    public func fetchAccessToken(completionHandler: @escaping (Result<TokenInfo, Error>) -> Void) {
         fetcher.fetchAccessToken(
             clientID: clientID,
             clientSecret: clientSecret,

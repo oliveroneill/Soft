@@ -5,5 +5,5 @@ public protocol ClientCredentials {
     ///
     /// - Parameter completionHandler: Called with a successful token or an
     /// error if one could not be retrieved
-    func fetchAccessToken(completionHandler: @escaping (Result<TokenInfo>) -> Void)
+    func fetchAccessToken(completionHandler: @escaping (Result<TokenInfo, Error>) -> Void)
 }

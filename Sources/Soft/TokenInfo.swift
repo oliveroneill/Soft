@@ -17,7 +17,7 @@ enum GetTokenError: Error {
 /// - Parameters:
 ///   - oauth: OAuth instance to make queries on
 ///   - completionHandler: Called upon completion
-public func getToken(oauth: SpotifyOAuth, completionHandler: @escaping (Result<TokenInfo>) -> Void) {
+public func getToken(oauth: SpotifyOAuth, completionHandler: @escaping (Result<TokenInfo, Error>) -> Void) {
     oauth.getCachedToken { result in
         switch result {
         case .success(let token):

@@ -9,7 +9,7 @@ protocol AuthorizationTokenFetcher {
     /// - Parameter completionHandler: Called with the result of the API call
     func fetchAccessToken(clientID: String, clientSecret: String,
                           parameters: [String:String],
-                          completionHandler: @escaping (Result<TokenInfo>) -> Void)
+                          completionHandler: @escaping (Result<TokenInfo, Error>) -> Void)
 }
 
 /// Errors from Spotify API errors
@@ -39,7 +39,7 @@ class SpotifyTokenFetcher: AuthorizationTokenFetcher {
     /// - Parameter completionHandler: Called with the result of the API call
     func fetchAccessToken(clientID: String, clientSecret: String,
                           parameters: [String:String],
-                          completionHandler: @escaping (Result<TokenInfo>) -> Void) {
+                          completionHandler: @escaping (Result<TokenInfo, Error>) -> Void) {
         // Make the request
         httpClient.authenticationRequest(
             url: apiURL, username: clientID, password: clientSecret,

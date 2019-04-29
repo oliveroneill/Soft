@@ -18,7 +18,7 @@ struct TokenInfoCredentials: ClientCredentials {
         self.tokenInfo = tokenInfo
     }
 
-    public func fetchAccessToken(completionHandler: @escaping (Result<TokenInfo>) -> Void) {
+    public func fetchAccessToken(completionHandler: @escaping (Result<TokenInfo, Error>) -> Void) {
         guard !tokenInfo.isExpired else {
             completionHandler(.failure(TokenInfoCredentialsError.expiredToken))
             return

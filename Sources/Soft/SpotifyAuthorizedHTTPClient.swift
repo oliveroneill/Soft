@@ -22,7 +22,7 @@ class SpotifyAuthorizedHTTPClient: HTTPClient {
     ///
     /// - Parameter completionHandler: Called with headers to be added or an
     ///   error if fetching token's fails
-    private func getAuthorizationHeaders(completionHandler: @escaping (Result<[String:String]>) -> Void) {
+    private func getAuthorizationHeaders(completionHandler: @escaping (Result<[String:String], Error>) -> Void) {
         clientCredentials.fetchAccessToken { result in
             switch result {
             case .success(let token):
